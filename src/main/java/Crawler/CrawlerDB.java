@@ -8,14 +8,35 @@ import java.sql.Statement;
 import java.sql.*;
 import java.util.LinkedList;
 import java.util.Queue;
+import java.net.URL;
+import java.io.*;
+import java.io.IOException;
+
 
 public class CrawlerDB {
     static final String DB_URL = "jdbc:mysql://localhost:3306/apt";
     static final String USER = "root";
     static final String PASS = "123456";
     static Connection conn;
-    
-    static public void createTable() {
+
+    public class linkAndID {
+        public String link;
+        public int id;
+        public linkAndID(String link, int id){
+            this.link = link;
+            this.id = id;
+        }
+    }
+
+    public CrawlerDB(){
+        try{
+            Class.forName("com.mysql.jdbc.Driver");
+            conn = DriverManager.getConnection(DB_URL, USER, PASS);
+        }
+        catch(SQLException e){e.printStackTrace();}
+        catch(Exception e){e.printStackTrace();}
+    }
+    public void createTable() {
         // Open a connection
         try{
             Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
@@ -33,7 +54,7 @@ public class CrawlerDB {
         
     }
 
-    static public void dropTable(){
+    public void dropTable(){
         try{
             Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
             Statement stmt = conn.createStatement();
@@ -44,10 +65,9 @@ public class CrawlerDB {
         catch(Exception e){e.printStackTrace();}
     }
    
-    static public void addLink(String link){
+    public void addLink(String link){
         try{
             Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
-            //Statement stmt = conn.createStatement();
             String sql = "INSERT INTO crawler " +
                          "(link,visited,indexed)"+
                          "VALUES(?,?,?)";
@@ -62,10 +82,9 @@ public class CrawlerDB {
         
     }
    
-    static public void markVisitedLink(String link){
+    public void markVisitedLink(String link){
         try{
             Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
-            //Statement stmt = conn.createStatement();
             String sql = "UPDATE crawler SET visited = ? WHERE link = ?";        
             PreparedStatement pstmt = conn.prepareStatement(sql);
             pstmt.setBoolean(1, true);
@@ -75,10 +94,9 @@ public class CrawlerDB {
         }catch(SQLException e){e.printStackTrace();}
     }
     
-    static public void markIndexedLink(String link){
+    public void markIndexedLink(String link){
         try{
             Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
-            //Statement stmt = conn.createStatement();
             String sql = "UPDATE crawler SET indexed = ? WHERE link = ?";        
             PreparedStatement pstmt = conn.prepareStatement(sql);
             pstmt.setBoolean(1, true);
@@ -88,15 +106,18 @@ public class CrawlerDB {
         }catch(SQLException e){e.printStackTrace();}
     }
    
-    static public boolean checkLink(String link){
+    public boolean checkLink(String link){
         boolean canAddToDB = false;
         try{
-            //Statement stmt = conn.createStatement();
             String sql = "SELECT * FROM crawler WHERE link= ?";   
             PreparedStatement pstmt = conn.prepareStatement(sql);
             pstmt.setString(1, link); 
             ResultSet result = pstmt.executeQuery();
             if(result.next() == false){
+                //check if downloadable link
+                URL url = new URL(link);
+                new BufferedReader(new InputStreamReader(url.openStream()));
+
                 canAddToDB = true;
                 System.out.println("Valid");
             }
@@ -105,42 +126,67 @@ public class CrawlerDB {
             }
         }
         catch(SQLException e){e.printStackTrace();}
+        catch (IOException io) {
+            System.out.println("Error");
+        }
         return canAddToDB;
     }
     
-    static public Queue<String> getLinksToVisit(){
-        Queue<String> queue = new LinkedList<>();
+    public Queue<linkAndID> getLinksToVisit(){
+        Queue<linkAndID> queue = new LinkedList<>();
 
         try{
-            //Statement stmt = conn.createStatement();
             String sql = "SELECT * FROM crawler WHERE visited= ?";   
             PreparedStatement pstmt = conn.prepareStatement(sql);
             pstmt.setBoolean(1, false); 
             ResultSet result = pstmt.executeQuery();
             while(result.next()){
+                int id = result.getInt(1);
                 String linkToVisit = result.getString(2);
-                System.out.println(linkToVisit);
-                queue.add(linkToVisit);
+                linkAndID temp = new linkAndID(linkToVisit,id);
+                queue.add(temp);
             }
         }
         catch(SQLException e){e.printStackTrace();}
         return queue;
     }
-
-    public static void main(String[] args) {
+    
+    public int getTotalNumberOfLinks(){
         try{
-            Class.forName("com.mysql.jdbc.Driver");
-            conn = DriverManager.getConnection(DB_URL, USER, PASS);
+            String sql = "SELECT COUNT(id) AS count FROM crawler";   
+            Statement stmt = conn.createStatement();
+            ResultSet result = stmt.executeQuery(sql);
+            while(result.next()){
+                return result.getInt("count");
+            } 
         }
         catch(SQLException e){e.printStackTrace();}
-        catch(Exception e){e.printStackTrace();}
-        //createTable();
+        return -1;
+    }
+    public int getTotalNumberOfDownloadedLinks(){
+
+        try{
+            String sql = "SELECT COUNT(id) AS count FROM crawler WHERE visited=true";   
+            Statement stmt = conn.createStatement();
+            ResultSet result = stmt.executeQuery(sql);
+            while(result.next()){
+                return result.getInt("count");
+            } 
+        }
+        catch(SQLException e){e.printStackTrace();}
+        return -1;
+    }
+
+    public static void main(String[] args) {
+        //CrawlerDB DB = new CrawlerDB();
+        
         //dropTable();
+        //createTable();
         //addLink("google4.com");
         //markVisitedLink("google2.com");
         //markIndexedLink("google2.com");
         //checkLink("google2.com");//return bool
-        Queue<String> queue = getLinksToVisit();
-        
+        //Queue<String> queue = getLinksToVisit();
+        //System.out.println(DB.getTotalNumberOfLinks());
     }
 }
