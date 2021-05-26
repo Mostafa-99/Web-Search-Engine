@@ -36,6 +36,7 @@ public class CrawlerDB {
         catch(SQLException e){e.printStackTrace();}
         catch(Exception e){e.printStackTrace();}
     }
+    
     public void createTable() {
         // Open a connection
         try{
@@ -132,15 +133,18 @@ public class CrawlerDB {
         return canAddToDB;
     }
     
-    public Queue<linkAndID> getLinksToVisit(){
+    public Queue<linkAndID> getLinksToVisit(int numberOfReqLinks){
         Queue<linkAndID> queue = new LinkedList<>();
-
         try{
-            String sql = "SELECT * FROM crawler WHERE visited= ?";   
+            String sql = "SELECT * FROM crawler WHERE visited = ? LIMIT ?";   
             PreparedStatement pstmt = conn.prepareStatement(sql);
             pstmt.setBoolean(1, false); 
+            pstmt.setInt(2, numberOfReqLinks); 
             ResultSet result = pstmt.executeQuery();
+            int i=0;
             while(result.next()){
+                i++;
+                System.out.println("Number in queue: "+i);
                 int id = result.getInt(1);
                 String linkToVisit = result.getString(2);
                 linkAndID temp = new linkAndID(linkToVisit,id);
@@ -163,6 +167,7 @@ public class CrawlerDB {
         catch(SQLException e){e.printStackTrace();}
         return -1;
     }
+    
     public int getTotalNumberOfDownloadedLinks(){
 
         try{
