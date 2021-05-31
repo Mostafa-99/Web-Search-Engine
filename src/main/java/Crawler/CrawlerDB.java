@@ -46,6 +46,7 @@ public class CrawlerDB {
                          "(id INTEGER not NULL AUTO_INCREMENT, " + 
                          " link VARCHAR(255) not null, "+ 
                          " visited BOOLEAN not null,"+
+                         " batched BOOLEAN not null,"+
                          " indexed BOOLEAN not null,"+
                          "PRIMARY KEY (id))";
 
@@ -57,7 +58,6 @@ public class CrawlerDB {
 
     public void dropTable(){
         try{
-            Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
             Statement stmt = conn.createStatement();
             String sql = "DROP TABLE crawler";
             stmt.executeUpdate(sql);
@@ -70,15 +70,16 @@ public class CrawlerDB {
         try{
             Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
             String sql = "INSERT INTO crawler " +
-                         "(link,visited,indexed)"+
-                         "VALUES(?,?,?)";
+                         "(link,visited,batched,indexed)"+
+                         "VALUES(?,?,?,?)";
 
             PreparedStatement pstmt = conn.prepareStatement(sql);
             pstmt.setString(1, link);
             pstmt.setBoolean(2, false);
             pstmt.setBoolean(3, false);
+            pstmt.setBoolean(4, false);
             pstmt.executeUpdate();
-            System.out.println("Link Added to table");
+            //System.out.println("Link Added to table");
         }catch(SQLException e){e.printStackTrace();}
         
     }
@@ -91,7 +92,19 @@ public class CrawlerDB {
             pstmt.setBoolean(1, true);
             pstmt.setString(2, link);
             pstmt.executeUpdate();
-            System.out.println("Link update");
+            //System.out.println("Link update");
+        }catch(SQLException e){e.printStackTrace();}
+    }
+    
+    public void markBatchedLink(String link){
+        try{
+            Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
+            String sql = "UPDATE crawler SET batched = ? WHERE link = ?";        
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt.setBoolean(1, true);
+            pstmt.setString(2, link);
+            pstmt.executeUpdate();
+            //System.out.println("Link update");
         }catch(SQLException e){e.printStackTrace();}
     }
     
@@ -103,14 +116,14 @@ public class CrawlerDB {
             pstmt.setBoolean(1, true);
             pstmt.setString(2, link);
             pstmt.executeUpdate();
-            System.out.println("Link update");
+            //System.out.println("Link update");
         }catch(SQLException e){e.printStackTrace();}
     }
    
     public boolean checkLink(String link){
         boolean canAddToDB = false;
         try{
-            String sql = "SELECT * FROM crawler WHERE link= ?";   
+            String sql = "SELECT * FROM crawler WHERE link=?";   
             PreparedStatement pstmt = conn.prepareStatement(sql);
             pstmt.setString(1, link); 
             ResultSet result = pstmt.executeQuery();
@@ -120,15 +133,15 @@ public class CrawlerDB {
                 new BufferedReader(new InputStreamReader(url.openStream()));
 
                 canAddToDB = true;
-                System.out.println("Valid");
+                //System.out.println("Valid");
             }
             else{
-                System.out.println("Invalid");
+                //System.out.println("Invalid");
             }
         }
         catch(SQLException e){e.printStackTrace();}
         catch (IOException io) {
-            System.out.println("Error");
+            //System.out.println("Error");
         }
         return canAddToDB;
     }
@@ -136,20 +149,27 @@ public class CrawlerDB {
     public Queue<linkAndID> getLinksToVisit(int numberOfReqLinks){
         Queue<linkAndID> queue = new LinkedList<>();
         try{
-            String sql = "SELECT * FROM crawler WHERE visited = ? LIMIT ?";   
+            String sql = "SELECT * FROM crawler WHERE visited =? AND batched =? LIMIT ?";   
             PreparedStatement pstmt = conn.prepareStatement(sql);
             pstmt.setBoolean(1, false); 
-            pstmt.setInt(2, numberOfReqLinks); 
+            pstmt.setBoolean(2, false); 
+            pstmt.setInt(3, numberOfReqLinks); 
             ResultSet result = pstmt.executeQuery();
-            int i=0;
+            //int i=0;
             while(result.next()){
-                i++;
-                System.out.println("Number in queue: "+i);
+                //i++;
+                //System.out.println("Number in queue: "+i);
                 int id = result.getInt(1);
                 String linkToVisit = result.getString(2);
                 linkAndID temp = new linkAndID(linkToVisit,id);
                 queue.add(temp);
+                sql = "UPDATE crawler SET batched = ? WHERE id = ?";   
+                pstmt = conn.prepareStatement(sql);
+                pstmt.setBoolean(1, true); 
+                pstmt.setInt(2, id); 
+                pstmt.executeUpdate();
             }
+
         }
         catch(SQLException e){e.printStackTrace();}
         return queue;
@@ -172,6 +192,19 @@ public class CrawlerDB {
 
         try{
             String sql = "SELECT COUNT(id) AS count FROM crawler WHERE visited=true";   
+            Statement stmt = conn.createStatement();
+            ResultSet result = stmt.executeQuery(sql);
+            while(result.next()){
+                return result.getInt("count");
+            } 
+        }
+        catch(SQLException e){e.printStackTrace();}
+        return -1;
+    }
+    public int getTotalNumberOfBatchedLinks(){
+
+        try{
+            String sql = "SELECT COUNT(id) AS count FROM crawler WHERE batched=true";   
             Statement stmt = conn.createStatement();
             ResultSet result = stmt.executeQuery(sql);
             while(result.next()){
