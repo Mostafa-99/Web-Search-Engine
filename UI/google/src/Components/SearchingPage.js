@@ -303,49 +303,57 @@ function SearchingPage() {
     const [currentPage, setCurrentPage] = useState(localStorage.getItem('currentPage'));
     const [postsPerPage] = useState(10);
     const [searchText,setSearchText] = useState(localStorage.getItem('text'));
+    const [currentText,setCurrentText] = useState(localStorage.getItem('text'));
     // const [searchText,setSearchText] = useState("");
     
-    // axios.get("https://efa-website-cufe.herokuapp.com/match/all"
-    // ,{withCredentials: true, credentials: 'include'}
-    // )   
-    // .then(res => {
-    //   if(res.status===200)
-    //   {
-    //     this.setState({myMatches: res.data.matches})
-    //   }
-    //   else
-    //   {
-    //     alert("Something went wrong please refresh the page!")
-    //   }   
-    // }).catch(err=>{
-    //     alert("Something went wrong please refresh the page!")
-    // })
+    useEffect(() => {
+        if(searchText!==""){
+            axios.get("http://localhost:9090/Length/"+searchText)    
+            .then(res => {
+              if(res.status===200)
+              {
+                //   console.log("length req: "+res.data.Count)
+                    setPostsLength(res.data.Count);
+              }
+              else
+              {
+                // alert("Something went wrong please refresh the page!")
+              }   
+            }).catch(err=>{
+                alert(err)
+            })
+        }
+      }, [searchText]);
 
     useEffect(() => {
         const fetchPosts = async () => {
           setLoading(true);
 
             console.log("searching...")
-            setPostsLength(dumm.length);
-            if (currentPage == 1) {
-                setPosts(dumm1)
-            }
-            else if(currentPage == 2) {
-                setPosts(dumm2)
-            }
-            else if(currentPage == 3) {
-                setPosts(dumm3)
-            }
-            else if(currentPage == 4) {
-                setPosts(dumm4)
-            }
 
-
+            if(searchText!==""){
+                axios.get("http://localhost:9090/Search/"+searchText+"?pageNo="+(currentPage-1))   
+                .then(res => {
+                  if(res.status===200)
+                  {
+                    console.log("res inside length: "+res.data.length);
+                    console.log("currpage: "+currentPage);
+                    setPosts(res.data);
+                    // setPostsLength(res.data.length);
+                  }
+                  else
+                  {
+                    // alert("Something went wrong please refresh the page!")
+                  }   
+                }).catch(err=>{
+                    alert(err)
+                })    
+            }
           setLoading(false);
         };
         
         fetchPosts();
-      }, []);
+      }, [searchText,currentPage]);
 
     const indexOfLastPost = currentPage * postsPerPage;
     const indexOfFirstPost = indexOfLastPost - postsPerPage;
@@ -354,14 +362,18 @@ function SearchingPage() {
     // Change page
     function paginate (pageNumber){
         localStorage.setItem('currentPage',pageNumber);
+        // fetchPosts()
     }
     function mySubmitHandler(){
-        localStorage.setItem('text', searchText);
+        localStorage.setItem('text', currentText);
         localStorage.setItem('currentPage', 1);
+        setSearchText(currentText);
+        setCurrentPage(1);
     }
     function speechRecHandler(t){
         localStorage.setItem('text', t);
         localStorage.setItem('currentPage', 1);
+        setCurrentText(t)
         setSearchText(t);
         setCurrentPage(1);
     }
@@ -376,9 +388,9 @@ function SearchingPage() {
                     style={{paddingLeft:"20px"}}
                     autoFocus
                     placeholder = "Enter search text..."
-                    value = {searchText} 
+                    value = {currentText} 
                     type = 'text'
-                    onChange = {event=>setSearchText(event.target.value)}
+                    onChange = {event=>setCurrentText(event.target.value)}
                     className = "searching-input-text"
                 />
             </form>
