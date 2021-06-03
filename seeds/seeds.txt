@@ -1,9 +1,7 @@
 https://www.spotify.com/eg-en/
+https://www.geeksforgeeks.org/
 https://javarevisited.blogspot.com/2014/09/how-to-parse-html-file-in-java-jsoup-example.html#axzz6uxMPpB8S
 https://stackoverflow.com
-https://github.com/
+https://www.geeksforgeeks.org/python-program-to-read-file-word-by-word/
 https://offer.alibaba.com/cps/d0bl0r98?bm=cps&src=saf&tp1=60b443f6265851033ea61caa&pid=15
 https://www.youtube.com/
-https://www.geeksforgeeks.org/
-https://www.geeksforgeeks.org/python-program-to-read-file-word-by-word/
-

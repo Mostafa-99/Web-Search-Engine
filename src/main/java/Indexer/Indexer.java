@@ -20,9 +20,9 @@ import DBManager.DBManager;
 
 import opennlp.tools.stemmer.PorterStemmer;
 
-public class Indexer {
+public class Indexer implements Runnable {
     
-    DBManager DBM = new DBManager();
+    DBManager DB = new DBManager();
     Hashtable<String,Integer> headersWordsFrequency = new Hashtable<String,Integer>();
     Hashtable<String,Integer> textWordsFrequency = new Hashtable<String,Integer>();
     Hashtable<String,Integer> titleWordsFrequency = new Hashtable<String,Integer>();
@@ -104,8 +104,8 @@ public class Indexer {
             if(titleWords.contains(word)){
                 title = titleWordsFrequency.get(word);
             }
-            String link = DBM.getLinkFromID_CrawlerTable(pageID);
-            DBM.addLink_WordsTable(link, text+header+title, text, header, title, word);
+            String link = DB.getLinkFromID_CrawlerTable(pageID);
+            DB.addLink_WordsTable(link, text+header+title, text, header, title, word);
         }
     }
 
@@ -150,20 +150,40 @@ public class Indexer {
             e.printStackTrace();
         }
     }
+
+    public void indexerMain(){
+        Queue<Integer> queue = DB.getLinksToVisitIndexer_CrawlerTable(5);
+        while(queue.size()!=0){
+            String filePath = "./downloaded/page_";
+            int id = queue.poll();
+            filePath = filePath + Integer.toString(id) + ".html";
+            index(filePath);
+            DB.markIndexedLink_CrawlerTable(id);
+            if(queue.size()==0){
+                queue = DB.getLinksToVisitIndexer_CrawlerTable(5);
+            }
+            System.out.println("Link with id "+id+" finished indexing!");
+        }
+    }
+    
+    public void run(){
+        indexerMain();
+        System.out.println("Indexer Finished");
+    }
     public static void main(String args[]) throws IOException {
-        Indexer i1 = new Indexer();
-        Queue<Integer> queue = i1.DBM.getLinksToVisit_CrawlerTable(5);
+        /*Indexer i1 = new Indexer();
+        Queue<Integer> queue = i1.DB.getLinksToVisitIndexer_CrawlerTable(5);
         while(queue.size()!=0){
             String filePath = "./downloaded/page_";
             int id = queue.poll();
             filePath = filePath + Integer.toString(id) + ".html";
             i1.index(filePath);
-            i1.DBM.markIndexedLink_CrawlerTable(id);
+            i1.DB.markIndexedLink_CrawlerTable(id);
             if(queue.size()==0){
-                queue = i1.DBM.getLinksToVisit_CrawlerTable(5);
+                queue = i1.DB.getLinksToVisitIndexer_CrawlerTable(5);
             }
             System.out.println("Link with id "+id+" finished indexing!");
-        }
+        }*/
     }
 }
 
