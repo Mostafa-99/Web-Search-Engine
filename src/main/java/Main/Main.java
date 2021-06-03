@@ -21,7 +21,7 @@ public class Main {
         mainCrawlerThread.start();
         
         mainIndexerThread.start();
-
+        
         mainCrawlerThread.join();
         mainIndexerThread.join();
     }

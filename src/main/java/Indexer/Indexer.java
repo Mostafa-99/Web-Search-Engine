@@ -153,20 +153,35 @@ public class Indexer implements Runnable {
 
     public void indexerMain(){
         Queue<Integer> queue = DB.getLinksToVisitIndexer_CrawlerTable(5);
-        while(queue.size()!=0){
-            String filePath = "./downloaded/page_";
-            int id = queue.poll();
-            filePath = filePath + Integer.toString(id) + ".html";
-            index(filePath);
-            DB.markIndexedLink_CrawlerTable(id);
-            if(queue.size()==0){
+        int batchedLinks = DB.getTotalNumberOfBatchedLinks();
+        int downloadedLinks = DB.getTotalNumberOfDownloadedLinks_CrawlerTable();
+        int indexedLinks = DB.getTotalNumberOfIndexedLinks_CrawlerTable();
+        System.out.println("batchedLinks "+batchedLinks+"downloadedLinks "+downloadedLinks+"indexedLinks "+indexedLinks);
+        while( !((batchedLinks == downloadedLinks) && (indexedLinks == downloadedLinks) && (batchedLinks == downloadedLinks)) ){
+            if(queue.size()!=0){
+                String filePath = "./downloaded/page_";
+                int id = queue.poll();
+                filePath = filePath + Integer.toString(id) + ".html";
+                index(filePath);
+                DB.markIndexedLink_CrawlerTable(id);
+                batchedLinks = DB.getTotalNumberOfBatchedLinks();
+                downloadedLinks = DB.getTotalNumberOfDownloadedLinks_CrawlerTable();
+                indexedLinks = DB.getTotalNumberOfIndexedLinks_CrawlerTable();
+                System.out.println("Link with id "+id+" finished indexing!");
+            }
+            else if(queue.size()==0){
                 queue = DB.getLinksToVisitIndexer_CrawlerTable(5);
             }
-            System.out.println("Link with id "+id+" finished indexing!");
         }
     }
     
     public void run(){
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
         indexerMain();
         System.out.println("Indexer Finished");
     }
@@ -183,6 +198,7 @@ public class Indexer implements Runnable {
                 queue = i1.DB.getLinksToVisitIndexer_CrawlerTable(5);
             }
             System.out.println("Link with id "+id+" finished indexing!");
+            (batchedLinks != downloadedLinks) && (indexedLinks != downloadedLinks) && (batchedLinks != downloadedLinks)
         }*/
     }
 }

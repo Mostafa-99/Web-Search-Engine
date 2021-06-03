@@ -15,7 +15,7 @@ import java.io.IOException;
 public class DBManager {
     static final String DB_URL = "jdbc:mysql://localhost:3306/apt";
     static final String USER = "root";
-    static final String PASS = "123456";
+    static final String PASS = "admin12345";
     static Connection conn;
     
     public class linkAndID {
@@ -275,10 +275,28 @@ public class DBManager {
         return -1;
     }
 
+    
+
     public int getTotalNumberOfDownloadedLinks_CrawlerTable(){
 
         try{
             String sql = "SELECT COUNT(id) AS count FROM crawler WHERE visited=true";   
+            Statement stmt = conn.createStatement();
+            ResultSet result = stmt.executeQuery(sql);
+            while(result.next()){
+                return result.getInt("count");
+            } 
+        }
+        catch(SQLException e){
+            //e.printStackTrace();
+        }
+        return -1;
+    }
+
+    public int getTotalNumberOfIndexedLinks_CrawlerTable(){
+
+        try{
+            String sql = "SELECT COUNT(id) AS count FROM crawler WHERE indexed=true";   
             Statement stmt = conn.createStatement();
             ResultSet result = stmt.executeQuery(sql);
             while(result.next()){
