@@ -4,6 +4,7 @@ import logo from '../hadras.png'
 import './SearchingPage.css'
 import Posts from './Posts'
 import Pagination from './Pagination'
+import SpeechRec from "./SpeechRec"
 import axios from 'axios';
 const dumm1 = [
     {
@@ -302,14 +303,29 @@ function SearchingPage() {
     const [currentPage, setCurrentPage] = useState(localStorage.getItem('currentPage'));
     const [postsPerPage] = useState(10);
     const [searchText,setSearchText] = useState(localStorage.getItem('text'));
+    // const [searchText,setSearchText] = useState("");
+    
+    // axios.get("https://efa-website-cufe.herokuapp.com/match/all"
+    // ,{withCredentials: true, credentials: 'include'}
+    // )   
+    // .then(res => {
+    //   if(res.status===200)
+    //   {
+    //     this.setState({myMatches: res.data.matches})
+    //   }
+    //   else
+    //   {
+    //     alert("Something went wrong please refresh the page!")
+    //   }   
+    // }).catch(err=>{
+    //     alert("Something went wrong please refresh the page!")
+    // })
 
     useEffect(() => {
         const fetchPosts = async () => {
           setLoading(true);
-          const res = await axios.get('https://jsonplaceholder.typicode.com/posts');
 
-
-        //   setPosts(res.data);
+            console.log("searching...")
             setPostsLength(dumm.length);
             if (currentPage == 1) {
                 setPosts(dumm1)
@@ -327,52 +343,64 @@ function SearchingPage() {
 
           setLoading(false);
         };
-    
+        
         fetchPosts();
       }, []);
 
     const indexOfLastPost = currentPage * postsPerPage;
     const indexOfFirstPost = indexOfLastPost - postsPerPage;
-    // const currentPosts = posts.slice(indexOfFirstPost, indexOfLastPost);
     const currentPosts = posts;
 
     // Change page
-    const paginate = pageNumber => localStorage.setItem('currentPage',pageNumber);
-    
+    function paginate (pageNumber){
+        localStorage.setItem('currentPage',pageNumber);
+    }
     function mySubmitHandler(){
         localStorage.setItem('text', searchText);
         localStorage.setItem('currentPage', 1);
     }
+    function speechRecHandler(t){
+        localStorage.setItem('text', t);
+        localStorage.setItem('currentPage', 1);
+        setSearchText(t);
+        setCurrentPage(1);
+    }
   return (
     <div className="searching-page">
-        {/* <a href="https://fontmeme.com/google-font/"><img src="https://fontmeme.com/permalink/210524/5a66607532bca256c144bd8a3cd07d16.png" alt="google-font" border="0"></a> */}
-        <div className="searching-hadras-logo">
-            <a href="/doodle"><img style={{height:'200px'}} src={logo} alt="hadras" border="0"/></a>
-        </div>
         <div className="searching-logo">
-            <a href="/doodle"><img src="https://fontmeme.com/permalink/210524/c504e219e1b6c0a480ba44921ad51c52.png" alt="google-font" border="0"/></a>
+            <a href="/"><img src="https://fontmeme.com/permalink/210603/602a6c2cb5391fdb7ec767ef92e84e3e.png" alt="google-font" border="0"/></a>
         </div>
         <div className="searching-textbox">
-            <form action="/doodling" onSubmit={event=>mySubmitHandler()}>
+            <form action="/googling" onSubmit={event=>mySubmitHandler()}>
                 <input
+                    style={{paddingLeft:"20px"}}
                     autoFocus
-                    placeholder = "   Enter search text..."
+                    placeholder = "Enter search text..."
                     value = {searchText} 
                     type = 'text'
                     onChange = {event=>setSearchText(event.target.value)}
                     className = "searching-input-text"
                 />
             </form>
-        </div>
-        <div className='container mt-5'>
-            <h1 className='text-primary mb-3'>Results</h1>
-            <Posts posts={currentPosts} loading={loading} />
-            <Pagination
-                postsPerPage={postsPerPage}
-                totalPosts={postsLength}
-                paginate={paginate}
+            <SpeechRec
+                onClick={() => setCurrentPage(1)}
+                speechRecHandler = {speechRecHandler}
             />
         </div>
+        {
+            currentPosts.length === 0?
+            ""
+            :
+            <div className='container mt-5'>
+                {/* <h1 className='text-primary mb-3'>Results</h1> */}
+                <Posts posts={currentPosts} loading={loading} />
+                <Pagination
+                    postsPerPage={postsPerPage}
+                    totalPosts={postsLength}
+                    paginate={paginate}
+                />
+            </div>
+        }
     </div>
   );
 }

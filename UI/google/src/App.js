@@ -5,10 +5,10 @@ import SearchingPage from './Components/SearchingPage'
 
 function App() {
   return (
-    <div className="App"  style={{height:"100%"}}>
+    <div className="App mt-5 pt-5"  style={{height:"100%"}}>
       <Switch>
-        <Route path="/doodle" component={HomePage} exact/>
-        <Route path="/doodling" component={SearchingPage} exact/>
+        <Route path="/" component={HomePage} exact/>
+        <Route path="/googling" component={SearchingPage} exact/>
       </Switch>
     </div>
   );
