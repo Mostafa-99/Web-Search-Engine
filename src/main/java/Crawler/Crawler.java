@@ -142,6 +142,7 @@ public class Crawler implements Runnable {
     }
     
     String reformRobotsPath(String path){
+
         path = normalizeURI(path);
         path = path.replaceAll("\\*", ".*");
         path = path.replaceAll("=", "=.*");
@@ -240,30 +241,31 @@ public class Crawler implements Runnable {
         
         try{
             while(true){
-                //System.out.println("hi");
-                /*if(DB.getTotalNumberOfDownloadedLinks()== crawlingSize){
-                    break;
-                }*/
-                linkAndID linkToVisit;
+                linkAndID linkToVisit = null;
                 synchronized(queue){
-                    if(queue.size()==0 && DB.getTotalNumberOfBatchedLinks() <= crawlingSize){                        
-                        System.out.println("Thread crawl"+ Thread.currentThread().getName());
+                    if(queue.size()==0 && DB.getTotalNumberOfBatchedLinks() <= crawlingSize && DB.getTotalNumberOfLinks()>=numberOfThreads){                        
+                        System.out.println("Thread crawl "+ Thread.currentThread().getName());
                         int sizeRequired = crawlingSize-DB.getTotalNumberOfBatchedLinks() >= numberOfThreads ? numberOfThreads :  crawlingSize-DB.getTotalNumberOfBatchedLinks();
                         queue = DB.getLinksToVisit(sizeRequired);
-                        System.out.println("!!!!!!!!!!!!!!!__numberOfThreads: "+numberOfThreads+"!!!!!!!!!!!!!!!!!!!____total batches: "+DB.getTotalNumberOfBatchedLinks()+"!!!!!!!!!!!!!!!!!!!!____ "+sizeRequired);
+                        //System.out.println("!!!!!!!!!!!!!!!__numberOfThreads: "+numberOfThreads+"!!!!!!!!!!!!!!!!!!!____total batches: "+DB.getTotalNumberOfBatchedLinks()+"!!!!!!!!!!!!!!!!!!!!____ "+sizeRequired);
                         if(queue.size()==0 || DB.getTotalNumberOfDownloadedLinks() == crawlingSize ){
                             break;
                         }
                     }
-                    linkToVisit = queue.poll();
+                    if(queue.size()!=0){
+                        linkToVisit = queue.poll();
+                        /*synchronized(numberOfDownloadedLinks){
+                            numberOfDownloadedLinks.increment();
+                        }*/
+                    }
                     
                 }
-                synchronized(numberOfDownloadedLinks){
-                    numberOfDownloadedLinks.increment();
+                if(linkToVisit !=null ){
+                    System.out.println("Start download "+ Thread.currentThread().getName());
+                    download(linkToVisit.link, linkToVisit.id);
+                    getURLs(linkToVisit.link,linkToVisit.id);
+                    System.out.println("Finished download "+ Thread.currentThread().getName());
                 }
-                download(linkToVisit.link, linkToVisit.id);
-                getURLs(linkToVisit.link,linkToVisit.id);
-                System.out.println("Finished download "+ Thread.currentThread().getName());
             }
         }
         catch(Exception e){ }
@@ -291,6 +293,9 @@ public class Crawler implements Runnable {
         catch(Exception e){}
     }
     
+    void resumeCrawling(){
+        DB.resetBatchedLinks();
+    }
    
     public void run(){
         //runSeeds();
@@ -299,21 +304,33 @@ public class Crawler implements Runnable {
         } catch (Exception e) {
             //TODO: handle exception
         }*/
+        System.out.println("Thread "+ Thread.currentThread().getName() + " Hi");
+        System.out.println("************************************************************");
         crawl();
         System.out.println("************************************************************");
-        System.out.println("Thread "+ Thread.currentThread().getName() + "Finished a link");
+        System.out.println("Thread "+ Thread.currentThread().getName() + " Finished a link");
         System.out.println("************************************************************");
     }
 
 }
 class CrawlerMain{
+    static final int RESTART = 0;
+    static final int RESUME = 1;
+    static final int state = 0;
+    static final int numberOfThreads = 20;
+
     public static void main(String args[]) throws InterruptedException {
+        
         CrawlerDB DB= new CrawlerDB();
         Crawler c0 = new Crawler(DB);
-        c0.runSeeds();
-        final int numberOfThreads = 10;
+        if(state == RESTART){
+            c0.runSeeds();
+        }
+        else{
+            c0.resumeCrawling();
+        }
+
         Queue<linkAndID> queue = new LinkedList<>();
-        
         queue = DB.getLinksToVisit(numberOfThreads);
         NumberOfDownloads numberOfDownloadedLinks= new NumberOfDownloads();
         numberOfDownloadedLinks.setValue(DB.getTotalNumberOfDownloadedLinks());
@@ -321,7 +338,6 @@ class CrawlerMain{
 
         Thread[] threads = new Thread[numberOfThreads];
         for(int i=0;i<numberOfThreads;i++){
-            //System.out.println("QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQ"+i);
             threads[i] = new Thread(new Crawler(DB,queue,numberOfThreads,numberOfDownloadedLinks,robots));
             threads[i].setName("Thread "+(i+1));
             threads[i].start();
@@ -329,21 +345,7 @@ class CrawlerMain{
         for (Thread thread : threads) {
             thread.join();
         }
-        //String link1 = c.normalizeURI("https://www.amazon.com/slp/safcsdavdsv/b");      
         
-        //System.out.println("1- "+c.checkValidityOfLink(link1)); 
-      /* int numberOfBatches =0;
-       int numberOfThreads = 4;
-       int crawlingSize = 39;
-        for(int i =0;i<20;i++){
-            if(numberOfBatches == crawlingSize)break;
-            int numberOfBatchesTemp = numberOfThreads - ((crawlingSize-numberOfBatches)%(numberOfThreads));
-            System.out.println( "4-"+(crawlingSize-numberOfBatches)+"%4"+"="+numberOfBatchesTemp);
-            numberOfBatches += numberOfBatchesTemp;
-        }
-        System.out.println(numberOfBatches);*/
-       // System.out.println("!!!!!!!!!!!!!!!__numberOfThreads: "+numberOfThreads+"!!!!!!!!!!!!!!!!!!!____total batches: "+DB.getTotalNumberOfBatchedLinks()+"!!!!!!!!!!!!!!!!!!!!____ "+(crawlingSize-DB.getTotalNumberOfBatchedLinks()+numberOfThreads)%(numberOfThreads));
-       
     
     }
 }
