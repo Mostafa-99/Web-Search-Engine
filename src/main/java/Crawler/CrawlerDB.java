@@ -16,7 +16,7 @@ import java.io.IOException;
 public class CrawlerDB {
     static final String DB_URL = "jdbc:mysql://localhost:3306/apt";
     static final String USER = "root";
-    static final String PASS = "123456";
+    static final String PASS = "admin12345";
     static Connection conn;
 
     public class linkAndID {
@@ -30,7 +30,7 @@ public class CrawlerDB {
 
     public CrawlerDB(){
         try{
-            Class.forName("com.mysql.jdbc.Driver");
+            Class.forName("com.mysql.cj.jdbc.Driver");
             conn = DriverManager.getConnection(DB_URL, USER, PASS);
         }
         catch(SQLException e){e.printStackTrace();}

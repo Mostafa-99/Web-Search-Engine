@@ -42,7 +42,7 @@ public class description {
             // doc = Jsoup.connect("https://github.com/").get();
             
             // doc = Jsoup.connect("https://www.google.com/").get();
-            doc = Jsoup.connect("https://en.wikipedia.org/").get();
+            doc = Jsoup.connect("https://www.geeksforgeeks.org/analysis-of-algorithems-little-o-and-little-omega-notations/?ref=ghm").get();
             
             System.out.println(doc.title());
 
