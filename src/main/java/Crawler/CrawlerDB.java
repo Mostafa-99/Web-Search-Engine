@@ -16,7 +16,7 @@ import java.io.IOException;
 public class CrawlerDB {
     static final String DB_URL = "jdbc:mysql://localhost:3306/apt";
     static final String USER = "root";
-    static final String PASS = "admin12345";
+    static final String PASS = "123456";
     static Connection conn;
 
     public class linkAndID {
@@ -138,6 +138,9 @@ public class CrawlerDB {
    
     public boolean checkLink(String link){
         boolean canAddToDB = false;
+        if(link == null || link ==""){
+            return false;
+        }
         try{
             String sql = "SELECT * FROM crawler WHERE link=?";   
             PreparedStatement pstmt = conn.prepareStatement(sql);
@@ -186,6 +189,7 @@ public class CrawlerDB {
                 pstmt.setBoolean(1, true); 
                 pstmt.setInt(2, id); 
                 pstmt.executeUpdate();
+                System.out.println("WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW"+pstmt);
             }
 
         }

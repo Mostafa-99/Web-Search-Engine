@@ -42,20 +42,30 @@ class robotsObj {
 public class Crawler implements Runnable {
     CrawlerDB DB ;
     Queue<linkAndID> queue;
-    final int crawlingSize = 68;
+    int crawlingSize;
     //int numberOfLinksInDB =0;
     NumberOfDownloads numberOfDownloadedLinks;
     int numberOfThreads;
-
+    int state;
+    static final int RESTART = 0;
+    static final int RESUME = 1;
     Hashtable<String, robotsObj> robots;
  
-   public Crawler(CrawlerDB DB){this.DB = DB;}
-    public Crawler(CrawlerDB DB, Queue<linkAndID> queue, int numberOfThreads, NumberOfDownloads numberOfDownloadedLinks, Hashtable<String, robotsObj> robots){
+   public Crawler(int state, int numberOfThreads,  int crawlingSize){
+       this.DB = new CrawlerDB();
+       
+       this.state = state;
+       this.crawlingSize = crawlingSize;
+       this.numberOfThreads = numberOfThreads;
+    }
+
+    public Crawler(CrawlerDB DB, Queue<linkAndID> queue, int numberOfThreads, int crawlingSize, NumberOfDownloads numberOfDownloadedLinks, Hashtable<String, robotsObj> robots){
         this.DB= DB;
         this.numberOfDownloadedLinks = numberOfDownloadedLinks;
         this.numberOfThreads = numberOfThreads;
         this.queue = queue;        
         this.robots = robots;
+        this.crawlingSize = crawlingSize;
     }
     
     public void download(String urlString, int id){
@@ -246,6 +256,9 @@ public class Crawler implements Runnable {
                     if(queue.size()==0 && DB.getTotalNumberOfBatchedLinks() <= crawlingSize && DB.getTotalNumberOfLinks()>=numberOfThreads){                        
                         System.out.println("Thread crawl "+ Thread.currentThread().getName());
                         int sizeRequired = crawlingSize-DB.getTotalNumberOfBatchedLinks() >= numberOfThreads ? numberOfThreads :  crawlingSize-DB.getTotalNumberOfBatchedLinks();
+                        System.out.println("sizeRequired__"+sizeRequired);
+                        System.out.println("crawlingSize__"+crawlingSize);
+                        System.out.println("batchedLinks__"+DB.getTotalNumberOfBatchedLinks());
                         queue = DB.getLinksToVisit(sizeRequired);
                         //System.out.println("!!!!!!!!!!!!!!!__numberOfThreads: "+numberOfThreads+"!!!!!!!!!!!!!!!!!!!____total batches: "+DB.getTotalNumberOfBatchedLinks()+"!!!!!!!!!!!!!!!!!!!!____ "+sizeRequired);
                         if(queue.size()==0 || DB.getTotalNumberOfDownloadedLinks() == crawlingSize ){
@@ -298,39 +311,71 @@ public class Crawler implements Runnable {
     }
    
     public void run(){
-        //runSeeds();
-        /*try {
-            Thread.sleep(100);
-        } catch (Exception e) {
-            //TODO: handle exception
-        }*/
-        System.out.println("Thread "+ Thread.currentThread().getName() + " Hi");
-        System.out.println("************************************************************");
-        crawl();
-        System.out.println("************************************************************");
-        System.out.println("Thread "+ Thread.currentThread().getName() + " Finished a link");
-        System.out.println("************************************************************");
+        if(Thread.currentThread().getName() == "Thread 0"){
+            try {
+                crawlerMain();
+            } catch (Exception e) {}
+        }
+        else{
+            System.out.println("Thread "+ Thread.currentThread().getName() + " Hi");
+            System.out.println("************************************************************");
+            crawl();
+            System.out.println("************************************************************");
+            System.out.println("Thread "+ Thread.currentThread().getName() + " Finished a link");
+            System.out.println("************************************************************");
+        }
     }
 
+    public void crawlerMain() throws InterruptedException{
+        if(state == RESTART){
+
+            runSeeds();
+        }
+        else{
+            resumeCrawling();
+        }
+
+        Queue<linkAndID> queue = new LinkedList<>();
+        int sizeRequired = crawlingSize-DB.getTotalNumberOfBatchedLinks() >= numberOfThreads ? numberOfThreads :  crawlingSize-DB.getTotalNumberOfBatchedLinks();
+
+        queue = DB.getLinksToVisit(sizeRequired);
+        NumberOfDownloads numberOfDownloadedLinks= new NumberOfDownloads();
+        numberOfDownloadedLinks.setValue(DB.getTotalNumberOfDownloadedLinks());
+        Hashtable<String, robotsObj> robots =  new Hashtable<String, robotsObj>();
+
+        Thread[] threads = new Thread[numberOfThreads];
+        for(int i=0;i<numberOfThreads;i++){
+            threads[i] = new Thread(new Crawler(DB,queue,numberOfThreads,crawlingSize,numberOfDownloadedLinks,robots));
+            threads[i].setName("Thread "+(i+1));
+            threads[i].start();
+        }
+        for (Thread thread : threads) {
+            thread.join();
+        }
+        
+    }
 }
+
+
+
 class CrawlerMain{
-    static final int RESTART = 0;
+    /*static final int RESTART = 0;
     static final int RESUME = 1;
     static final int state = 0;
-    static final int numberOfThreads = 20;
+    static final int numberOfThreads = 9;*/
 
-    public static void main(String args[]) throws InterruptedException {
+    public void main(String args[]) throws InterruptedException {
         
-        CrawlerDB DB= new CrawlerDB();
+        /*CrawlerDB DB= new CrawlerDB();
         Crawler c0 = new Crawler(DB);
         if(state == RESTART){
             c0.runSeeds();
         }
         else{
             c0.resumeCrawling();
-        }
+        }*/
 
-        Queue<linkAndID> queue = new LinkedList<>();
+        /*Queue<linkAndID> queue = new LinkedList<>();
         queue = DB.getLinksToVisit(numberOfThreads);
         NumberOfDownloads numberOfDownloadedLinks= new NumberOfDownloads();
         numberOfDownloadedLinks.setValue(DB.getTotalNumberOfDownloadedLinks());
@@ -344,7 +389,7 @@ class CrawlerMain{
         }
         for (Thread thread : threads) {
             thread.join();
-        }
+        }*/
         
     
     }

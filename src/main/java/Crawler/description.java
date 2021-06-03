@@ -10,7 +10,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 
-public class description {
+public class Description {
     public static int countMatches(String text, String str)
     {
         if (text.length()==0 || str.length()==0) {
