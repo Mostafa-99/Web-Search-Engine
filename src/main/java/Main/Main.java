@@ -1,7 +1,7 @@
 package Main;
 
 import Crawler.Crawler;
-import DBManager.DBManager;
+//import DBManager.DBManager;
 import Indexer.Indexer;
 
 public class Main {

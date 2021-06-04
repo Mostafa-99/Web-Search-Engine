@@ -1,7 +1,6 @@
 package Backend.jpa.controller;
 
 import Backend.jpa.services.LinkService;
-import Backend.jpa.services.SearchService;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -12,7 +11,6 @@ import java.util.Scanner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.*;
 import opennlp.tools.stemmer.PorterStemmer;
 
@@ -21,15 +19,8 @@ import opennlp.tools.stemmer.PorterStemmer;
 @RequestMapping("/Length")
 public class LinkEndPoint {
     @Autowired
-    private SearchService searchservice;
-    @Autowired
     private LinkService linkservice;
 
-//    @RequestMapping(method = RequestMethod.GET, value = "/{WordName}")
-//    public ResponseEntity<Long> getNumlinks(@PathVariable String WordName) {
-//
-//        return linkservice.GetLinksCount(WordName);
-//    }
 
 @CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping(method = RequestMethod.GET, value = "/{WordName}")

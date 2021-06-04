@@ -1,13 +1,11 @@
 package Backend.jpa.services;
+import Backend.jpa.model.History;
 import Backend.jpa.model.Links;
-import Backend.jpa.model.Word;
-// import Backend.jpa.model.searchPagingModel;
+import Backend.jpa.repository.HistoryRepository;
 import Backend.jpa.repository.LinkRepository;
 import Backend.jpa.repository.WordRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -18,8 +16,6 @@ import org.jsoup.select.Elements;
 
 import java.io.IOException;
 import java.util.HashSet;
-import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -29,7 +25,8 @@ public class SearchService {
 	@Autowired
 	private LinkRepository link_repo;
 	@Autowired
-	private LinkService linkservice;
+	private HistoryRepository History_Repo;
+
 
 
 	public ResponseEntity<?> GetLinks(String word, int pageNumber, int pageSize) throws IOException {
@@ -81,14 +78,14 @@ public class SearchService {
 	
 	public ResponseEntity<?> searchWordSuggestion(String word, int pageSize)
     {
-        Word Words []=word_repo.searchByName(word);
-        Set<Word> searchedWords=new HashSet<>();
+        History h1 []=History_Repo.searchByName(word);
+        Set<History> searchedWords=new HashSet<>();
         for(int i=0;i<pageSize;i++)
         {
-            if(i>=Words.length)
+            if(i>=h1.length)
                 break;
             else
-            searchedWords.add(Words[i]);
+            searchedWords.add(h1[i]);
         }
         return new ResponseEntity<>(searchedWords, HttpStatus.OK);
     }

@@ -102,7 +102,6 @@ public class Crawler implements Runnable {
         Document doc;
         Elements links;
         try {
-            String title="";
             StringBuilder contentBuilder = new StringBuilder();
             BufferedReader in = new BufferedReader(new FileReader("./downloaded/page_"+Integer.toString(id)+".html"));
             String str;
@@ -111,9 +110,9 @@ public class Crawler implements Runnable {
             }
             in.close();
             String content = contentBuilder.toString();
-
+            
             doc = Jsoup.parse(content);
-            title = doc.title();
+           
 
             links = doc.select("a");
             Element link;
