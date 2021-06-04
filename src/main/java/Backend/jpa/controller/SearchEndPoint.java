@@ -32,17 +32,22 @@ public class SearchEndPoint {
     public ResponseEntity<?> getlinks(@PathVariable String Word,
                                       @RequestParam(defaultValue = "0") Integer pageNo,
                                       @RequestParam(defaultValue = "10") Integer pageSize) throws IOException {
-                        
-        History history=new History();
-        history.setWord(Word);
-        History_Repo.save(history);
+                            
 
         String  string = Word.toLowerCase().replaceAll("'|`|’|,", "").replaceAll("[^a-z]", " ").trim();
 
         try {
             if(loadStopwords().contains(string))
-                string=null;
-
+                string="";
+                if(History_Repo.findByName(string).isPresent())    
+                {            
+                }
+                else
+                {
+                    History history=new History();
+                    history.setWord(string);
+                    History_Repo.save(history);
+                }
         } catch (IOException e) {
             e.printStackTrace();
         }

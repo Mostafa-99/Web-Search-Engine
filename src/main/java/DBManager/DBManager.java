@@ -63,6 +63,16 @@ public class DBManager {
             stmt.executeUpdate(sql);
             System.out.println("Created table in given database...");
         }catch(SQLException e){e.printStackTrace();}
+        // try{
+        //     Statement stmt = conn.createStatement();
+        //     String sql = "CREATE TABLE History " + 
+        //                  "(id INTEGER not NULL AUTO_INCREMENT, " + 
+        //                  " Name VARCHAR(255), "+ 
+        //                  "PRIMARY KEY (id))";
+
+        //     stmt.executeUpdate(sql);
+        //     System.out.println("Created table in given database...");
+        // }catch(SQLException e){e.printStackTrace();}
 
         try{
             Statement stmt = conn.createStatement();
@@ -108,6 +118,14 @@ public class DBManager {
             System.out.println("Table dropped!!");
         }catch(SQLException e){e.printStackTrace();}
         catch(Exception e){e.printStackTrace();}
+
+        // try{
+        //     Statement stmt = conn.createStatement();
+        //     String sql = "DROP TABLE History";
+        //     stmt.executeUpdate(sql);
+        //     System.out.println("Table dropped!!");
+        // }catch(SQLException e){e.printStackTrace();}
+        // catch(Exception e){e.printStackTrace();}
     }
    
     /******************************************************* Crawler Table  *********************************************************/
