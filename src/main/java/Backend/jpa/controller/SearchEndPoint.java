@@ -34,7 +34,7 @@ public class SearchEndPoint {
     @RequestMapping(method = RequestMethod.GET, value = "/{Word}")
     public ResponseEntity<?> getlinks(@PathVariable String Word,
                                       @RequestParam(defaultValue = "0") Integer pageNo,
-                                      @RequestParam(defaultValue = "10") Integer pageSize) {
+                                      @RequestParam(defaultValue = "10") Integer pageSize) throws IOException {
 
         String  string = Word.toLowerCase().replaceAll("'|`|’|,", "").replaceAll("[^a-z]", " ").trim();
 
