@@ -13,10 +13,10 @@ import java.util.Optional;
 @Repository
 public interface WordRepository extends JpaRepository<Word,Long> {
 
-	@Query(value = "SELECT * FROM words where name=:word " ,nativeQuery = true)
-	public Optional<Word> findWordByName(String word);
-	@Query(value = "SELECT ID FROM words where name=:word " ,nativeQuery = true)
-	public Long findIdbyName(String word);
+	@Query(value = "SELECT * FROM words where name=:word" ,nativeQuery = true)
+    public Optional<Word> findWordByName(@Param("word")String word);
+    @Query(value = "SELECT ID FROM words where name=:word" ,nativeQuery = true)
+    public Long findIdbyName(@Param("word")String word);
 
 
 }

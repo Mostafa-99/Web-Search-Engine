@@ -105,6 +105,7 @@ public class Indexer implements Runnable {
                 title = titleWordsFrequency.get(word);
             }
             String link = DB.getLinkFromID_CrawlerTable(pageID);
+            //System.out.println("Word= "+word+" , Link : "+link);
             DB.addLink_WordsTable(link, text+header+title, text, header, title, word);
         }
     }
@@ -156,7 +157,7 @@ public class Indexer implements Runnable {
         int batchedLinks = DB.getTotalNumberOfBatchedLinks();
         int downloadedLinks = DB.getTotalNumberOfDownloadedLinks_CrawlerTable();
         int indexedLinks = DB.getTotalNumberOfIndexedLinks_CrawlerTable();
-        System.out.println("batchedLinks "+batchedLinks+"downloadedLinks "+downloadedLinks+"indexedLinks "+indexedLinks);
+        //System.out.println("batchedLinks "+batchedLinks+"downloadedLinks "+downloadedLinks+"indexedLinks "+indexedLinks);
         while( !((batchedLinks == downloadedLinks) && (indexedLinks == downloadedLinks) && (batchedLinks == downloadedLinks)) ){
             if(queue.size()!=0){
                 String filePath = "./downloaded/page_";
@@ -200,6 +201,8 @@ public class Indexer implements Runnable {
             System.out.println("Link with id "+id+" finished indexing!");
             (batchedLinks != downloadedLinks) && (indexedLinks != downloadedLinks) && (batchedLinks != downloadedLinks)
         }*/
+        Indexer i1 = new Indexer();
+        i1.index("./downloaded/page_5.html");
     }
 }
 

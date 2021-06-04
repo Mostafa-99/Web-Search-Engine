@@ -6,7 +6,7 @@ import Indexer.Indexer;
 public class Main {
     static final int RESTART = 0;
     static final int RESUME = 1;
-    static final int state = RESTART;
+    static final int state = RESUME;
     static final int numberOfThreads = 5;
     static final int crawlingSize = 5;
 
