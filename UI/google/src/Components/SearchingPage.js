@@ -296,6 +296,23 @@ const dumm = [
         'id' : 35
     }
 ]
+const dumm_names = [
+    {
+        "name" : "ahmed"
+    },
+    {
+        "name" : "ahmar"
+    },
+    {
+        "name" : "ahmad"
+    },
+    {
+        "name" : "ahmadany"
+    },
+    {
+        "name" : "ahmadan"
+    }
+]
 function SearchingPage() {
     const [posts, setPosts] = useState([]);
     const [postsLength, setPostsLength] = useState();
@@ -304,16 +321,18 @@ function SearchingPage() {
     const [postsPerPage] = useState(10);
     const [searchText,setSearchText] = useState(localStorage.getItem('text'));
     const [currentText,setCurrentText] = useState(localStorage.getItem('text'));
+    const [dataListName,setDataListName] = useState([]);
     // const [searchText,setSearchText] = useState("");
     
     useEffect(() => {
-        if(searchText!==""){
-            axios.get("http://localhost:9090/Length/"+searchText)    
+        if(currentText!==""){
+            axios.get("http://localhost:9090/Search/Suggestions/"+currentText)    
             .then(res => {
               if(res.status===200)
               {
                 //   console.log("length req: "+res.data.Count)
-                    setPostsLength(res.data.Count);
+                    setDataListName(res.data);
+                    // setPostsLength(res.data.Count);
               }
               else
               {
@@ -323,7 +342,29 @@ function SearchingPage() {
                 alert(err)
             })
         }
-      }, [searchText]);
+        else{
+            setDataListName([])
+        }
+      }, [currentText]);
+
+      useEffect(() => {
+          if(searchText!==""){
+              axios.get("http://localhost:9090/Length/"+searchText)    
+              .then(res => {
+                if(res.status===200)
+                {
+                  //   console.log("length req: "+res.data.Count)
+                      setPostsLength(res.data.Count);
+                }
+                else
+                {
+                  // alert("Something went wrong please refresh the page!")
+                }   
+              }).catch(err=>{
+                  alert(err)
+              })
+          }
+        }, [searchText]);
 
     useEffect(() => {
         const fetchPosts = async () => {
@@ -392,7 +433,19 @@ function SearchingPage() {
                     type = 'text'
                     onChange = {event=>setCurrentText(event.target.value)}
                     className = "searching-input-text"
+                    list="datalistOptions"
+                    // form-control 
                 />
+                <datalist id="datalistOptions" style={{width:"100%"}}>
+                    {
+                        dataListName.length == 0?
+                        ""
+                        :
+                        dataListName.map((post,num) => (
+                            <option value={post.name}/>
+                          ))
+                    }
+                </datalist>
             </form>
             <SpeechRec
                 onClick={() => setCurrentPage(1)}

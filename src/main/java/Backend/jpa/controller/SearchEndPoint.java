@@ -34,7 +34,7 @@ public class SearchEndPoint {
     @RequestMapping(method = RequestMethod.GET, value = "/{Word}")
     public ResponseEntity<?> getlinks(@PathVariable String Word,
                                       @RequestParam(defaultValue = "0") Integer pageNo,
-                                      @RequestParam(defaultValue = "10") Integer pageSize) {
+                                      @RequestParam(defaultValue = "10") Integer pageSize) throws IOException {
 
         String  string = Word.toLowerCase().replaceAll("'|`|’|,", "").replaceAll("[^a-z]", " ").trim();
 
@@ -49,6 +49,15 @@ public class SearchEndPoint {
         String word2 = porterStemmer.stem(string);
         return searchservice.GetLinks(word2,pageNo,pageSize);
     }
+
+	@CrossOrigin(origins = "http://localhost:3000")
+    @RequestMapping(method = RequestMethod.GET, value = "/Suggestions/{Search}")
+    public ResponseEntity<?> searchWordSuggestion(@PathVariable(name="Search") String Search,
+                                                  @RequestParam(defaultValue = "10") Integer pageSize) {
+
+        return searchservice.searchWordSuggestion(Search,pageSize);
+    }
+    
     public ArrayList<String> loadStopwords() throws IOException, FileNotFoundException {
         Scanner s = new Scanner(new File("./src/main/resources/stopWords.txt"));
         ArrayList<String> list = new ArrayList<String>();
