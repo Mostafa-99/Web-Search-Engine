@@ -168,6 +168,9 @@ public class Indexer implements Runnable {
                 batchedLinks = DB.getTotalNumberOfBatchedLinks();
                 downloadedLinks = DB.getTotalNumberOfDownloadedLinks_CrawlerTable();
                 indexedLinks = DB.getTotalNumberOfIndexedLinks_CrawlerTable();
+                headersWordsFrequency.clear();
+                textWordsFrequency.clear();
+                titleWordsFrequency.clear();
                 System.out.println("Link with id "+id+" finished indexing!");
             }
             else if(queue.size()==0){
