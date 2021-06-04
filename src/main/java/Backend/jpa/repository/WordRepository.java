@@ -17,6 +17,6 @@ public interface WordRepository extends JpaRepository<Word,Long> {
     public Optional<Word> findWordByName(@Param("word")String word);
     @Query(value = "SELECT ID FROM words where name=:word" ,nativeQuery = true)
     public Long findIdbyName(@Param("word")String word);
-
-
+    @Query(value="SELECT * FROM words as w WHERE w.name like :search%",nativeQuery=true)
+    public  Word []searchByName(@Param("search")String search );
 }

@@ -42,5 +42,19 @@ public class SearchService {
 		}
 		return new ResponseEntity<>(LinksPaged, HttpStatus.OK);
 	}
+	
+	public ResponseEntity<?> searchWordSuggestion(String word, int pageSize)
+    {
+        Word Words []=word_repo.searchByName(word);
+        Set<Word> searchedWords=new HashSet<>();
+        for(int i=0;i<pageSize;i++)
+        {
+            if(i>=Words.length)
+                break;
+            else
+            searchedWords.add(Words[i]);
+        }
+        return new ResponseEntity<>(searchedWords, HttpStatus.OK);
+    }
 }
 
