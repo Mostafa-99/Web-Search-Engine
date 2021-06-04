@@ -1,7 +1,5 @@
 package Backend.jpa.services;
 
-import Backend.jpa.model.Links;
-import Backend.jpa.model.Word;
 import Backend.jpa.repository.LinkRepository;
 import Backend.jpa.repository.WordRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.Hashtable;
-import java.util.Optional;
 
 @Service
 public class LinkService {

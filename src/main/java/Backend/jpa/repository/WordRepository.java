@@ -1,8 +1,5 @@
 package Backend.jpa.repository;
 import Backend.jpa.model.Word;
-import org.springframework.data.domain.Page;
-import Backend.jpa.model.Links;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -17,6 +14,6 @@ public interface WordRepository extends JpaRepository<Word,Long> {
     public Optional<Word> findWordByName(@Param("word")String word);
     @Query(value = "SELECT ID FROM words where name=:word" ,nativeQuery = true)
     public Long findIdbyName(@Param("word")String word);
-    @Query(value="SELECT * FROM words as w WHERE w.name like :search% LIMIT 10",nativeQuery=true)
-    public  Word []searchByName(@Param("search")String search );
+    // @Query(value="SELECT * FROM words as w WHERE w.name like :search% LIMIT 10",nativeQuery=true)
+    // public  Word []searchByName(@Param("search")String search );
 }

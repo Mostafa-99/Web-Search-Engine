@@ -1,6 +1,7 @@
 package Backend.jpa.controller;
 
-import Backend.jpa.services.LinkService;
+import Backend.jpa.model.History;
+import Backend.jpa.repository.HistoryRepository;
 import Backend.jpa.services.SearchService;
 import opennlp.tools.stemmer.PorterStemmer;
 
@@ -10,13 +11,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-// import com.example.jpa.services.LinkService;
-// import com.example.jpa.services.SearchService;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -28,13 +25,17 @@ public class SearchEndPoint {
     @Autowired
     private SearchService searchservice;
     @Autowired
-    private LinkService linkservice;
+    private HistoryRepository History_Repo;
 
 	@CrossOrigin(origins = "http://localhost:3000")
     @RequestMapping(method = RequestMethod.GET, value = "/{Word}")
     public ResponseEntity<?> getlinks(@PathVariable String Word,
                                       @RequestParam(defaultValue = "0") Integer pageNo,
                                       @RequestParam(defaultValue = "10") Integer pageSize) throws IOException {
+                        
+        History history=new History();
+        history.setWord(Word);
+        History_Repo.save(history);
 
         String  string = Word.toLowerCase().replaceAll("'|`|’|,", "").replaceAll("[^a-z]", " ").trim();
 
