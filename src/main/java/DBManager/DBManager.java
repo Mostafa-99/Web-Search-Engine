@@ -54,7 +54,7 @@ public class DBManager {
         // Open a connection
         try{
             Statement stmt = conn.createStatement();
-            String sql = "CREATE TABLE WORD " + 
+            String sql = "CREATE TABLE WORDS " + 
                          "(id INTEGER not NULL AUTO_INCREMENT, " + 
                          " Name VARCHAR(255), "+ 
                          " IDF FLOAT,"+
@@ -74,7 +74,7 @@ public class DBManager {
                          " Header INTEGER,"+
                          " Title INTEGER,"+
                          " Word_id INTEGER not NULL,"+
-                         "FOREIGN KEY (Word_id) references WORD(id),"+
+                         "FOREIGN KEY (Word_id) references WORDS(id),"+
                          "CONSTRAINT URL_id UNIQUE (Word_id,URL),"+
                          "PRIMARY KEY (id))";
 
@@ -103,7 +103,7 @@ public class DBManager {
 
         try{
             Statement stmt = conn.createStatement();
-            String sql = "DROP TABLE WORD";
+            String sql = "DROP TABLE WORDS";
             stmt.executeUpdate(sql);
             System.out.println("Table dropped!!");
         }catch(SQLException e){e.printStackTrace();}
@@ -408,7 +408,7 @@ public class DBManager {
     
     public int getWordID_WordsTable(String word){
         try{
-            String sql = "SELECT id FROM word where Name = ?";   
+            String sql = "SELECT id FROM words where Name = ?";   
             PreparedStatement pstmt = conn.prepareStatement(sql);
             pstmt.setString(1, word); 
             ResultSet result = pstmt.executeQuery();
@@ -424,7 +424,7 @@ public class DBManager {
 
     public void addWord_WordsTable(String word){
         try{
-            String sql = "INSERT INTO word " +
+            String sql = "INSERT INTO words " +
                          "(Name)"+
                          "VALUES(?)";
 
@@ -438,7 +438,7 @@ public class DBManager {
     
     public void addIDF_WordsTable(int id, float idf){
         try{
-            String sql = "UPDATE word SET" +
+            String sql = "UPDATE words SET" +
                          " IDF = ?"+
                          " Where id = ?";
 
