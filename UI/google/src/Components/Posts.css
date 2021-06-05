@@ -1,0 +1,8 @@
+.card-body a{
+    text-decoration: none;
+}
+
+.card-body #search-number{
+    color: gray;
+    font-size: .8rem;
+}

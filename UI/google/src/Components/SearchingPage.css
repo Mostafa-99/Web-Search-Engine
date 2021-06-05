@@ -10,3 +10,7 @@
 .searching-page .searching-textbox{
     margin-top: 2vh;
 }
+
+.container{
+    width: 60% !important;
+}

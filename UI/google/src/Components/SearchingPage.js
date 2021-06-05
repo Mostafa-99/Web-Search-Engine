@@ -385,7 +385,6 @@ function SearchingPage() {
                   {
                     console.log("page length: "+res.data.length);
                     console.log("currpage: "+currentPage);
-                    console.log(res.data)
                     setPosts(res.data);
                     // setPostsLength(res.data.length);
                   }
@@ -466,9 +465,9 @@ function SearchingPage() {
                 <div className='container mt-3'>
                     {
                         postsLength?
-                        <h3 className='text-primary mb-5'>Your searched word has {postsLength} results</h3> 
+                        <h3 className='text-primary mb-4'>Your searched word has {postsLength} results</h3> 
                         :
-                        <h3 className='text-primary mb-5'>Your searched word has no results</h3>
+                        <h3 className='text-primary mb-4'>Your searched word has no results</h3>
                     }
                     <Posts posts={currentPosts} loading={loading} />
                     <Pagination
