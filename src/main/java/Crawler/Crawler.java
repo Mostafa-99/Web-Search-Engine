@@ -4,6 +4,7 @@ import java.io.*;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 import java.util.Scanner;
 
@@ -68,29 +69,24 @@ public class Crawler implements Runnable {
     }
     
     public void download(String urlString, int id){
-        //System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAAA___"+id+"__AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA: "+ Thread.currentThread().getName());
 
         BufferedReader reader = null;
         try {
             URL url = new URL(urlString);
             reader = new BufferedReader(new InputStreamReader(url.openStream()));
+            StringBuilder contentBuilder = new StringBuilder();
 
             BufferedWriter writer = new BufferedWriter(new FileWriter("./downloaded/page_"+Integer.toString(id)+".html"));
-
             String line;
             while ((line = reader.readLine()) != null) {
+                contentBuilder.append(line);
                 writer.write(line);
             }
             writer.close();
-            //System.out.println("*****************************************************************************");
-            //numberOfDownloadedLinks++;
-            /*(numberOfDownloadedLinks){
-                numberOfDownloadedLinks.increment();;
-            }*/
-            //System.out.println("******numberOfDownloadedLinks: "+numberOfDownloadedLinks.getValue());
-            //System.out.println("Page downloaded. "+(id));
-            //System.out.println("*****************************************************************************");
-
+            reader.close();
+            getURLs(urlString, id, contentBuilder);
+            
+            
         } catch (MalformedURLException e) {
             System.out.println("Error");
         } catch (IOException io) {
@@ -98,17 +94,17 @@ public class Crawler implements Runnable {
         }
     }
 
-    void getURLs(String linkIn,int id){
+    void getURLs(String linkIn,int id,StringBuilder contentBuilder){
         Document doc;
         Elements links;
         try {
-            StringBuilder contentBuilder = new StringBuilder();
-            BufferedReader in = new BufferedReader(new FileReader("./downloaded/page_"+Integer.toString(id)+".html"));
+            //StringBuilder contentBuilder = new StringBuilder();
+            /*BufferedReader in = new BufferedReader(new FileReader("./downloaded/page_"+Integer.toString(id)+".html"));
             String str;
             while ((str = in.readLine()) != null) {
                 contentBuilder.append(str);
             }
-            in.close();
+            in.close();*/
             String content = contentBuilder.toString();
             
             doc = Jsoup.parse(content);
@@ -120,44 +116,41 @@ public class Crawler implements Runnable {
                 link=links.get(j);
                 String linkHref = link.attr("abs:href").toString();
                 if(linkHref!=""){
-                    //System.out.println(j + " "+linkHref);
+                    linkHref = normalizeURI(linkHref);
                     synchronized(DB){
                         boolean isValid = checkValidityOfLink(linkHref);
                         
                         if(isValid == true){
-                            /*if(numberOfLinksInDB == crawlingSize){
-                                break;
-                            }*/
-                            //System.out.println("a= " +linkHref);
-                            //System.out.println("DBCheckLink: "+linkHref+"   "+isValid);
                             DB.addLink_CrawlerTable(linkHref);
-                           // numberOfLinksInDB++;
                         }
                     }
                 }
             }
             DB.markVisitedLink_CrawlerTable(linkIn);
         }
-        catch (IOException e) {
+        catch (Exception e) {
            // e.printStackTrace();
         }
     }
     
-    /*TODO!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/
-    String normalizeURI(String uri) {
+    String normalizeURI(String urlStr) {
         //uri = uri.replaceAll("^(http://)", "");
         //uri = uri.replaceAll("^(https://)", "");
-        //uri = uri.replaceAll("^(www\\.)", "");
         //URI x= URI.create(uri.toLowerCase()).normalize();
+        //uri = uri.replaceAll("www\\.", "");
         //return x.toString();
-        uri = uri.replaceAll("\\s", ""); 
-        uri = uri.toLowerCase(); 
-        return uri;
+        try {
+            urlStr = urlStr.replaceAll("/index.html", "/");
+            urlStr = urlStr.replaceAll("/#", "/");
+            URL url= new URL(urlStr);
+            URI uri = new URI(url.getProtocol(), url.getUserInfo(), url.getHost().toLowerCase(), url.getPort(), url.getPath(), url.getQuery(), url.getRef());
+            urlStr=uri.toASCIIString();
+        } catch (Exception e) {}
+        return urlStr;
     }
     
     String reformRobotsPath(String path){
 
-        path = normalizeURI(path);
         path = path.replaceAll("\\*", ".*");
         path = path.replaceAll("=", "=.*");
         path = path.replaceAll("\\?", "\\\\"+"?");
@@ -180,7 +173,6 @@ public class Crawler implements Runnable {
                     reader = new BufferedReader(new InputStreamReader(hostURL.openStream()));
                     String line;
                     robotsObj r = new robotsObj();
-                    //System.out.println("Host: "+ robotURL);                    
                     while ((line = reader.readLine()) != null) {
                         if(line.startsWith("User-agent: *")){
                             while ((line = reader.readLine()) != null) {                                
@@ -195,7 +187,6 @@ public class Crawler implements Runnable {
                                     r.disAllowed.add(path);
                                 }
                                 else if(!line.startsWith("User-agent: *") && !line.isEmpty()){
-                                    //System.out.println("Break: "+line);
                                     break;
                                 }
                             }
@@ -205,16 +196,11 @@ public class Crawler implements Runnable {
                         robots.put(hostname, r);
                     }
                     reader.close();
-                } catch (MalformedURLException e) {
-                    //System.out.println("Error in: "+url);
                 } catch (Exception e) {
                    // System.out.println("Error in: "+url);
                    // e.printStackTrace();
                 }
             }
-            /*else{
-                System.out.println("Already added");
-            }*/
         }
         catch(Exception e){
             //e.printStackTrace();
@@ -264,23 +250,19 @@ public class Crawler implements Runnable {
                         System.out.println("crawlingSize__"+crawlingSize);
                         System.out.println("batchedLinks__"+DB.getTotalNumberOfBatchedLinks_CrawlerTable());
                         queue = DB.getLinksToVisitCrawler_CrawlerTable(sizeRequired);
-                        //System.out.println("!!!!!!!!!!!!!!!__numberOfThreads: "+numberOfThreads+"!!!!!!!!!!!!!!!!!!!____total batches: "+DB.getTotalNumberOfBatchedLinks_CrawlerTable()+"!!!!!!!!!!!!!!!!!!!!____ "+sizeRequired);
                         if(queue.size()==0 || DB.getTotalNumberOfDownloadedLinks_CrawlerTable() == crawlingSize ){
                             break;
                         }
                     }
                     if(queue.size()!=0){
                         linkToVisit = queue.poll();
-                        /*synchronized(numberOfDownloadedLinks){
-                            numberOfDownloadedLinks.increment();
-                        }*/
                     }
                     
                 }
                 if(linkToVisit !=null ){
                     System.out.println("Start download "+ Thread.currentThread().getName());
                     download(linkToVisit.link, linkToVisit.id);
-                    getURLs(linkToVisit.link,linkToVisit.id);
+                    //getURLs(linkToVisit.link,linkToVisit.id);
                     System.out.println("Finished download "+ Thread.currentThread().getName());
                 }
             }
@@ -321,8 +303,6 @@ public class Crawler implements Runnable {
             } catch (Exception e) {}
         }
         else{
-            System.out.println("Thread "+ Thread.currentThread().getName() + " Hi");
-            System.out.println("************************************************************");
             crawl();
             System.out.println("************************************************************");
             System.out.println("Thread "+ Thread.currentThread().getName() + " Finished a link");

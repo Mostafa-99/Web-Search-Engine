@@ -13,6 +13,7 @@ import org.json.simple.JSONObject;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
+import org.jsoup.nodes.Element;
 
 import java.io.IOException;
 import java.util.HashSet;
@@ -29,7 +30,7 @@ public class SearchService {
 
 
 
-	public ResponseEntity<?> GetLinks(String word, int pageNumber, int pageSize) throws IOException {
+	public ResponseEntity<?> GetLinks(String wordOrig,String word, int pageNumber, int pageSize) throws IOException {
 
 		Long ID = word_repo.findIdbyName(word);
 		Links Links[] = link_repo.findALLLinks(ID);
@@ -43,6 +44,7 @@ public class SearchService {
 		String Title=null;
 		Elements desc;
 		Document doc;
+		String description ="";
 		for(int i=pageNumber*pageSize;i<(pageNumber*pageSize)+pageSize;i++)
 		{
 			if(i>=Links.length)
@@ -59,13 +61,39 @@ public class SearchService {
 				doc = Jsoup.connect(URL).get();
 				Title=doc.title();
 				desc = doc.select("meta[name=description]");
-				//
+				///////////////////////////////////////////////////////////////
+
+				Elements elements = doc.body().select("*");
+				String paragraph = "";
+				for (Element element : elements) {
+					if(element.ownText().contains(wordOrig)){
+						
+						String temp = element.ownText();
+						if(temp.endsWith(".")){
+							temp = temp.replaceAll("\\.",". ");
+						}
+						else{
+							temp += ". ";
+						}
+						paragraph+=temp;
+						
+						//System.out.println(element.ownText());
+					}
+				}
+				if((paragraph).length()>1000){
+					paragraph = paragraph.substring(0, 300);
+				}
+				paragraph = paragraph.trim().replaceAll(" +", " ");
+		
+				//System.out.println("OUT: "+paragraph);
+				///////////////////////////////////////////////////////////////
 				json.put("URL", URL);
 				json.put("TF",TF);
 				json.put("Plain", Plain);
 				json.put("Header",Header);
 				json.put("Title Number",TitleNUM);
-				json.put("description", desc.attr("content"));
+				//json.put("description", desc.attr("content"));
+				json.put("description", paragraph);
 				json.put("Title", Title);
 				jsonObjects.add(json);
 				

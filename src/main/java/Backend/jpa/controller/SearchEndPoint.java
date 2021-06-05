@@ -48,7 +48,7 @@ public class SearchEndPoint {
         }
         PorterStemmer porterStemmer = new PorterStemmer();
         String word2 = porterStemmer.stem(string);
-        return searchservice.GetLinks(word2,pageNo,pageSize);
+        return searchservice.GetLinks(Word,word2,pageNo,pageSize);
     }
 
 	@CrossOrigin(origins = "http://localhost:3000")

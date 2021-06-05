@@ -204,8 +204,41 @@ public class Indexer implements Runnable {
             System.out.println("Link with id "+id+" finished indexing!");
             (batchedLinks != downloadedLinks) && (indexedLinks != downloadedLinks) && (batchedLinks != downloadedLinks)
         }*/
-        Indexer i1 = new Indexer();
-        i1.index("./downloaded/page_5.html");
+        //Indexer i1 = new Indexer();
+        //i1.index("./downloaded/page_5.html");
+        BufferedReader in = new BufferedReader(new FileReader("./downloaded/page_3.html"));
+        StringBuilder contentBuilder = new StringBuilder();
+
+        String str;
+        while ((str = in.readLine()) != null) {
+            contentBuilder.append(str);
+        }
+        in.close();
+        String content = contentBuilder.toString();
+        Document doc = Jsoup.parse(content);
+        Elements elements = doc.body().select("*");
+        String paragraph = "";
+        for (Element element : elements) {
+            if(element.ownText().contains("get")){
+                if((paragraph+element.ownText()).length()<=300){
+                    String temp = element.ownText();
+                    if(temp.endsWith(".")){
+                        temp = temp.replaceAll("\\.",". ");
+                    }
+                    else{
+                        temp += ". ";
+                    }
+                    paragraph+=temp;
+                }
+                else{
+                    break;
+                }
+                System.out.println(element.ownText());
+            }
+        }
+        paragraph = paragraph.trim().replaceAll(" +", " ");
+
+        System.out.println("OUT: "+paragraph);
     }
 }
 

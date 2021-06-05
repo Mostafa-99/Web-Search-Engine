@@ -379,6 +379,7 @@ function SearchingPage() {
                   {
                     console.log("res inside length: "+res.data.length);
                     console.log("currpage: "+currentPage);
+                    console.log(res.data)
                     setPosts(res.data);
                     // setPostsLength(res.data.length);
                   }
