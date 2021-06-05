@@ -1,7 +1,6 @@
 package Main;
 
 import Crawler.Crawler;
-//import DBManager.DBManager;
 import Indexer.Indexer;
 
 public class Main {
@@ -14,7 +13,8 @@ public class Main {
     public static void main(String[] args) throws Exception {
         Crawler c0 = new Crawler(state,numberOfThreads, crawlingSize);
         Indexer i0 = new Indexer();
-        //c0.crawlerMain();
+        //Run as threads 
+        //For making the indexer parallel to the crawler make it start before crawler join line
         Thread mainCrawlerThread = new Thread(c0);
         Thread mainIndexerThread = new Thread(i0);
         mainCrawlerThread.setName("Thread 0");

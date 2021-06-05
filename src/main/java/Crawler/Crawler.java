@@ -43,7 +43,6 @@ public class Crawler implements Runnable {
     DBManager DB ;
     Queue<linkAndID> queue;
     int crawlingSize;
-    //int numberOfLinksInDB =0;
     NumberOfDownloads numberOfDownloadedLinks;
     int numberOfThreads;
     int state;
@@ -134,11 +133,6 @@ public class Crawler implements Runnable {
     }
     
     String normalizeURI(String urlStr) {
-        //uri = uri.replaceAll("^(http://)", "");
-        //uri = uri.replaceAll("^(https://)", "");
-        //URI x= URI.create(uri.toLowerCase()).normalize();
-        //uri = uri.replaceAll("www\\.", "");
-        //return x.toString();
         try {
             urlStr = urlStr.replaceAll("/index.html", "/");
             urlStr = urlStr.replaceAll("/#", "/");
@@ -196,15 +190,10 @@ public class Crawler implements Runnable {
                         robots.put(hostname, r);
                     }
                     reader.close();
-                } catch (Exception e) {
-                   // System.out.println("Error in: "+url);
-                   // e.printStackTrace();
-                }
+                } catch (Exception e) { }
             }
         }
-        catch(Exception e){
-            //e.printStackTrace();
-        }
+        catch(Exception e){ }
     }
 
     boolean checkValidityOfLink(String link){
@@ -231,7 +220,6 @@ public class Crawler implements Runnable {
                     }
                 }
             }
-
         }
         catch(Exception e){}
         return  DB.checkLink_CrawlerTable(link) && !disAllowedFlag;
@@ -244,11 +232,7 @@ public class Crawler implements Runnable {
                 linkAndID linkToVisit = null;
                 synchronized(queue){
                     if(queue.size()==0 && DB.getTotalNumberOfBatchedLinks_CrawlerTable() <= crawlingSize && DB.getTotalNumberOfLinks_CrawlerTable()>=numberOfThreads){                        
-                        System.out.println("Thread crawl "+ Thread.currentThread().getName());
                         int sizeRequired = crawlingSize-DB.getTotalNumberOfBatchedLinks_CrawlerTable() >= numberOfThreads ? numberOfThreads :  crawlingSize-DB.getTotalNumberOfBatchedLinks_CrawlerTable();
-                        System.out.println("sizeRequired__"+sizeRequired);
-                        System.out.println("crawlingSize__"+crawlingSize);
-                        System.out.println("batchedLinks__"+DB.getTotalNumberOfBatchedLinks_CrawlerTable());
                         queue = DB.getLinksToVisitCrawler_CrawlerTable(sizeRequired);
                         if(queue.size()==0 || DB.getTotalNumberOfDownloadedLinks_CrawlerTable() == crawlingSize ){
                             break;
@@ -262,7 +246,6 @@ public class Crawler implements Runnable {
                 if(linkToVisit !=null ){
                     System.out.println("Start download "+ Thread.currentThread().getName());
                     download(linkToVisit.link, linkToVisit.id);
-                    //getURLs(linkToVisit.link,linkToVisit.id);
                     System.out.println("Finished download "+ Thread.currentThread().getName());
                 }
             }
@@ -274,21 +257,15 @@ public class Crawler implements Runnable {
         try {
             DB.dropTables();
             DB.createTables();
-            //numberOfLinksInDB = DB.getTotalNumberOfLinks_CrawlerTable();
-            
-            //numberOfDownloadedLinks.setValue(DB.getTotalNumberOfDownloadedLinks_CrawlerTable());
+
             File myObj = new File("./seeds/seeds.txt");
             Scanner myReader = new Scanner(myObj);
             while (myReader.hasNextLine()) {
                 String data = myReader.nextLine();
                 DB.addLink_CrawlerTable(data);
-                //numberOfLinksInDB++;
             }
             myReader.close();
-        } catch (FileNotFoundException e) {
-            //System.out.println("An error occurred.");
-            //e.printStackTrace();
-        }
+        } catch (FileNotFoundException e) {}
         catch(Exception e){}
     }
     
@@ -337,44 +314,5 @@ public class Crawler implements Runnable {
             thread.join();
         }
         
-    }
-}
-
-
-
-class CrawlerMain{
-    /*static final int RESTART = 0;
-    static final int RESUME = 1;
-    static final int state = 0;
-    static final int numberOfThreads = 9;*/
-
-    public void main(String args[]) throws InterruptedException {
-        
-        /*DBManager DB= new DBManager();
-        Crawler c0 = new Crawler(DB);
-        if(state == RESTART){
-            c0.runSeeds();
-        }
-        else{
-            c0.resumeCrawling();
-        }*/
-
-        /*Queue<linkAndID> queue = new LinkedList<>();
-        queue = DB.getLinksToVisitCrawler_CrawlerTable(numberOfThreads);
-        NumberOfDownloads numberOfDownloadedLinks= new NumberOfDownloads();
-        numberOfDownloadedLinks.setValue(DB.getTotalNumberOfDownloadedLinks_CrawlerTable());
-        Hashtable<String, robotsObj> robots =  new Hashtable<String, robotsObj>();
-
-        Thread[] threads = new Thread[numberOfThreads];
-        for(int i=0;i<numberOfThreads;i++){
-            threads[i] = new Thread(new Crawler(DB,queue,numberOfThreads,numberOfDownloadedLinks,robots));
-            threads[i].setName("Thread "+(i+1));
-            threads[i].start();
-        }
-        for (Thread thread : threads) {
-            thread.join();
-        }*/
-        
-    
     }
 }

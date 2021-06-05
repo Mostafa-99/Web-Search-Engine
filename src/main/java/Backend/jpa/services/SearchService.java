@@ -34,7 +34,7 @@ public class SearchService {
 
 		Long ID = word_repo.findIdbyName(word);
 		Links Links[] = link_repo.findALLLinks(ID);
-		//int x=pageNumber*pageSize;
+
 		Set <JSONObject>jsonObjects = new HashSet<>();
 		String URL=null;
 		long TF=0;
@@ -77,15 +77,13 @@ public class SearchService {
 						}
 						paragraph+=temp;
 						
-						//System.out.println(element.ownText());
 					}
 				}
 				if((paragraph).length()>1000){
-					paragraph = paragraph.substring(0, 200);
+					paragraph = paragraph.substring(0, 100);
 				}
 				paragraph = paragraph.trim().replaceAll(" +", " ");
 		
-				//System.out.println("OUT: "+paragraph);
 				///////////////////////////////////////////////////////////////
 				json.put("URL", URL);
 				json.put("TF",TF);
@@ -99,7 +97,6 @@ public class SearchService {
 				
 				
 			}
-				//LinksPaged.add(Links[i]);
 		}
 		return new ResponseEntity<>(jsonObjects, HttpStatus.OK);
 	}

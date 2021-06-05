@@ -23,12 +23,5 @@ public class History {
 	public String getWord() {
 		return Word;
 	}
-    // public History(Long ID, String name) {
-	// 	this.ID = ID;
-	// 	Word = name;
-	// }
-
-
-
     
 }

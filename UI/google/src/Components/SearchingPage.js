@@ -6,313 +6,7 @@ import Posts from './Posts'
 import Pagination from './Pagination'
 import SpeechRec from "./SpeechRec"
 import axios from 'axios';
-const dumm1 = [
-    {
-        'name' : 'result 1',
-        'id' : 1
-    },
-    {
-        'name' : 'result 2',
-        'id' : 2
-    },
-    {
-        'name' : 'result 3',
-        'id' : 3
-    },
-    {
-        'name' : 'result 4',
-        'id' : 4
-    },
-    {
-        'name' : 'result 5',
-        'id' : 5
-    },
-    {
-        'name' : 'result 6',
-        'id' : 6
-    },
-    {
-        'name' : 'result 7',
-        'id' : 7
-    },
-    {
-        'name' : 'result 8',
-        'id' : 8
-    },
-    {
-        'name' : 'result 9',
-        'id' : 9
-    },
-    {
-        'name' : 'result 10',
-        'id' : 10
-    }
-]
-const dumm2 = [
-    {
-        'name' : 'result 11',
-        'id' : 11
-    },
-    {
-        'name' : 'result 12',
-        'id' : 12
-    },
-    {
-        'name' : 'result 13',
-        'id' : 13
-    },
-    {
-        'name' : 'result 14',
-        'id' : 14
-    },
-    {
-        'name' : 'result 15',
-        'id' : 15
-    },
-    {
-        'name' : 'result 16',
-        'id' : 16
-    },
-    {
-        'name' : 'result 17',
-        'id' : 17
-    },
-    {
-        'name' : 'result 18',
-        'id' : 18
-    },
-    {
-        'name' : 'result 19',
-        'id' : 19
-    },
-    {
-        'name' : 'result 20',
-        'id' : 20
-    }
-]
-const dumm3 = [
-    {
-        'name' : 'result 21',
-        'id' : 21
-    },
-    {
-        'name' : 'result 22',
-        'id' : 22
-    },
-    {
-        'name' : 'result 23',
-        'id' : 23
-    },
-    {
-        'name' : 'result 24',
-        'id' : 24
-    },
-    {
-        'name' : 'result 25',
-        'id' : 25
-    },
-    {
-        'name' : 'result 26',
-        'id' : 26
-    },
-    {
-        'name' : 'result 27',
-        'id' : 27
-    },
-    {
-        'name' : 'result 28',
-        'id' : 28
-    },
-    {
-        'name' : 'result 29',
-        'id' : 29
-    },
-    {
-        'name' : 'result 30',
-        'id' : 30
-    }
-]
-const dumm4 = [
-    {
-        'name' : 'result 31',
-        'id' : 31
-    },
-    {
-        'name' : 'result 32',
-        'id' : 32
-    },
-    {
-        'name' : 'result 33',
-        'id' : 33
-    },
-    {
-        'name' : 'result 34',
-        'id' : 34
-    },
-    {
-        'name' : 'result 35',
-        'id' : 35
-    }
-]
-const dumm = [
-    {
-        'name' : 'result 1',
-        'id' : 1
-    },
-    {
-        'name' : 'result 2',
-        'id' : 2
-    },
-    {
-        'name' : 'result 3',
-        'id' : 3
-    },
-    {
-        'name' : 'result 4',
-        'id' : 4
-    },
-    {
-        'name' : 'result 5',
-        'id' : 5
-    },
-    {
-        'name' : 'result 6',
-        'id' : 6
-    },
-    {
-        'name' : 'result 7',
-        'id' : 7
-    },
-    {
-        'name' : 'result 8',
-        'id' : 8
-    },
-    {
-        'name' : 'result 9',
-        'id' : 9
-    },
-    {
-        'name' : 'result 10',
-        'id' : 10
-    },
-    {
-        'name' : 'result 11',
-        'id' : 11
-    },
-    {
-        'name' : 'result 12',
-        'id' : 12
-    },
-    {
-        'name' : 'result 13',
-        'id' : 13
-    },
-    {
-        'name' : 'result 14',
-        'id' : 14
-    },
-    {
-        'name' : 'result 15',
-        'id' : 15
-    },
-    {
-        'name' : 'result 16',
-        'id' : 16
-    },
-    {
-        'name' : 'result 17',
-        'id' : 17
-    },
-    {
-        'name' : 'result 18',
-        'id' : 18
-    },
-    {
-        'name' : 'result 19',
-        'id' : 19
-    },
-    {
-        'name' : 'result 20',
-        'id' : 20
-    },
-    {
-        'name' : 'result 21',
-        'id' : 21
-    },
-    {
-        'name' : 'result 22',
-        'id' : 22
-    },
-    {
-        'name' : 'result 23',
-        'id' : 23
-    },
-    {
-        'name' : 'result 24',
-        'id' : 24
-    },
-    {
-        'name' : 'result 25',
-        'id' : 25
-    },
-    {
-        'name' : 'result 26',
-        'id' : 26
-    },
-    {
-        'name' : 'result 27',
-        'id' : 27
-    },
-    {
-        'name' : 'result 28',
-        'id' : 28
-    },
-    {
-        'name' : 'result 29',
-        'id' : 29
-    },
-    {
-        'name' : 'result 30',
-        'id' : 30
-    },
-    {
-        'name' : 'result 31',
-        'id' : 31
-    },
-    {
-        'name' : 'result 32',
-        'id' : 32
-    },
-    {
-        'name' : 'result 33',
-        'id' : 33
-    },
-    {
-        'name' : 'result 34',
-        'id' : 34
-    },
-    {
-        'name' : 'result 35',
-        'id' : 35
-    }
-]
-const dumm_names = [
-    {
-        "name" : "ahmed"
-    },
-    {
-        "name" : "ahmar"
-    },
-    {
-        "name" : "ahmad"
-    },
-    {
-        "name" : "ahmadany"
-    },
-    {
-        "name" : "ahmadan"
-    }
-]
+
 function SearchingPage() {
     const [posts, setPosts] = useState([]);
     const [postsLength, setPostsLength] = useState();
@@ -322,7 +16,6 @@ function SearchingPage() {
     const [searchText,setSearchText] = useState(localStorage.getItem('text'));
     const [currentText,setCurrentText] = useState(localStorage.getItem('text'));
     const [dataListName,setDataListName] = useState([]);
-    // const [searchText,setSearchText] = useState("");
     
     useEffect(() => {
         if(currentText!==""){
@@ -330,13 +23,10 @@ function SearchingPage() {
             .then(res => {
               if(res.status===200)
               {
-                //   console.log("length req: "+res.data.Count)
                     setDataListName(res.data);
-                    // setPostsLength(res.data.Count);
               }
               else
               {
-                // alert("Something went wrong please refresh the page!")
               }   
             }).catch(err=>{
                 alert(err)
@@ -348,24 +38,13 @@ function SearchingPage() {
       }, [currentText]);
 
       useEffect(() => {
-        //   if(searchText==="" || searchText===" " || searchText==="  "){
-        //     alert("please enter a valid search input not an empty string!")
-        //   }
-        //   else 
           if(searchText!=="" && searchText!==" " && searchText!=="  "){
-        // if(searchText!==""){
               axios.get("http://localhost:9090/Length/"+searchText)    
               .then(res => {
                 if(res.status===200)
                 {
-                  //   console.log("length req: "+res.data.Count)
                       setPostsLength(res.data.Count);
-                      console.log("search length: "+res.data.Count);
-                }
-                else
-                {
-                  // alert("Something went wrong please refresh the page!")
-                }   
+                } 
               }).catch(err=>{
                   alert(err)
               })
@@ -383,15 +62,8 @@ function SearchingPage() {
                 .then(res => {
                   if(res.status===200)
                   {
-                    console.log("page length: "+res.data.length);
-                    console.log("currpage: "+currentPage);
                     setPosts(res.data);
-                    // setPostsLength(res.data.length);
-                  }
-                  else
-                  {
-                    // alert("Something went wrong please refresh the page!")
-                  }   
+                  }  
                 }).catch(err=>{
                     alert(err)
                 })    
@@ -409,7 +81,6 @@ function SearchingPage() {
     // Change page
     function paginate (pageNumber){
         localStorage.setItem('currentPage',pageNumber);
-        // fetchPosts()
     }
     function mySubmitHandler(){
         localStorage.setItem('text', currentText);

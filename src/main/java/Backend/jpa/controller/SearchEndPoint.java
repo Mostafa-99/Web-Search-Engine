@@ -75,30 +75,3 @@ public class SearchEndPoint {
     }
 
 }
-
-
-
-
-
-
-
-/*@RestController
-@RequestMapping("/Search")
-public class SearchEndPoint {
-	@Autowired
-	private SearchService searchservice;
-	@Autowired
-	private LinkService linkservice;
-
-	@CrossOrigin(origins = "http://localhost:3000")
-	@RequestMapping(method = RequestMethod.GET, value = "/{Word}")
-	public ResponseEntity<?> getlinks(@PathVariable String Word,
-									  @RequestParam(defaultValue = "0") Integer pageNo,
-									  @RequestParam(defaultValue = "10") Integer pageSize) {
-
-		return searchservice.GetLinks(Word,pageNo,pageSize);
-	}
-
-
-
-}*/

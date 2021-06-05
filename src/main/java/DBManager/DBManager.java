@@ -32,8 +32,8 @@ public class DBManager {
             Class.forName("com.mysql.cj.jdbc.Driver");
             conn = DriverManager.getConnection(DB_URL, USER, PASS);
         }
-        catch(SQLException e){e.printStackTrace();}
-        catch(Exception e){e.printStackTrace();}
+        catch(SQLException e){}
+        catch(Exception e){}
     }
    
     public void createTables() {
@@ -49,7 +49,7 @@ public class DBManager {
 
             stmt.executeUpdate(sql);
             System.out.println("Created table in given database...");
-        }catch(SQLException e){e.printStackTrace();}
+        }catch(SQLException e){}
 
         // Open a connection
         try{
@@ -62,17 +62,18 @@ public class DBManager {
 
             stmt.executeUpdate(sql);
             System.out.println("Created table in given database...");
-        }catch(SQLException e){e.printStackTrace();}
-        // try{
-        //     Statement stmt = conn.createStatement();
-        //     String sql = "CREATE TABLE History " + 
-        //                  "(id INTEGER not NULL AUTO_INCREMENT, " + 
-        //                  " Name VARCHAR(255), "+ 
-        //                  "PRIMARY KEY (id))";
+        }catch(SQLException e){}
+        
+         try{
+             Statement stmt = conn.createStatement();
+             String sql = "CREATE TABLE History " + 
+                          "(id INTEGER not NULL AUTO_INCREMENT, " + 
+                          " Name VARCHAR(255), "+ 
+                          "PRIMARY KEY (id))";
 
-        //     stmt.executeUpdate(sql);
-        //     System.out.println("Created table in given database...");
-        // }catch(SQLException e){e.printStackTrace();}
+             stmt.executeUpdate(sql);
+             System.out.println("Created table in given database...");
+        }catch(SQLException e){}
 
         try{
             Statement stmt = conn.createStatement();
@@ -90,7 +91,7 @@ public class DBManager {
 
             stmt.executeUpdate(sql);
             System.out.println("Created table in given database...");
-        }catch(SQLException e){e.printStackTrace();}
+        }catch(SQLException e){}
         
     }
 
@@ -100,38 +101,37 @@ public class DBManager {
             String sql = "DROP TABLE crawler";
             stmt.executeUpdate(sql);
             System.out.println("Table dropped!!");
-        }catch(SQLException e){e.printStackTrace();}
-        catch(Exception e){e.printStackTrace();}
+        }catch(SQLException e){}
+        catch(Exception e){}
         
         try{
             Statement stmt = conn.createStatement();
             String sql = "DROP TABLE LINKS";
             stmt.executeUpdate(sql);
             System.out.println("Table dropped!!");
-        }catch(SQLException e){e.printStackTrace();}
-        catch(Exception e){e.printStackTrace();}
+        }catch(SQLException e){}
+        catch(Exception e){}
 
         try{
             Statement stmt = conn.createStatement();
             String sql = "DROP TABLE WORDS";
             stmt.executeUpdate(sql);
             System.out.println("Table dropped!!");
-        }catch(SQLException e){e.printStackTrace();}
-        catch(Exception e){e.printStackTrace();}
+        }catch(SQLException e){}
+        catch(Exception e){}
 
-        // try{
-        //     Statement stmt = conn.createStatement();
-        //     String sql = "DROP TABLE History";
-        //     stmt.executeUpdate(sql);
-        //     System.out.println("Table dropped!!");
-        // }catch(SQLException e){e.printStackTrace();}
-        // catch(Exception e){e.printStackTrace();}
+        //uncomment to drop history table
+        /*try{
+            Statement stmt = conn.createStatement();
+            String sql = "DROP TABLE History";
+            stmt.executeUpdate(sql);
+            System.out.println("Table dropped!!");
+        }catch(SQLException e){}
+        catch(Exception e){}*/
     }
    
     /******************************************************* Crawler Table  *********************************************************/
     public void addLink_CrawlerTable(String link){
-        //System.out.println("Linkkk: "+link);
-        //System.out.println("Linkkk2: "+link.length());
         try{
             String sql = "INSERT INTO crawler " +
                          "(link,visited,batched,indexed)"+
@@ -143,11 +143,7 @@ public class DBManager {
             pstmt.setBoolean(3, false);
             pstmt.setBoolean(4, false);
             pstmt.executeUpdate();
-            //System.out.println("Link Added to table");
-        }catch(SQLException e){
-            //e.printStackTrace();
-        }
-        
+        }catch(SQLException e){ }  
     }
     
     public void markVisitedLink_CrawlerTable(String link){
@@ -157,10 +153,7 @@ public class DBManager {
             pstmt.setBoolean(1, true);
             pstmt.setString(2, link);
             pstmt.executeUpdate();
-            //System.out.println("Link update");
-        }catch(SQLException e){
-            //e.printStackTrace();
-        }
+        }catch(SQLException e){ }
     }
 
     public void resetBatchedLinks_CrawlerTable(){
@@ -171,9 +164,7 @@ public class DBManager {
             pstmt.setBoolean(2, false);
             pstmt.executeUpdate();
             System.out.println("Reset");
-        }catch(SQLException e){
-            //e.printStackTrace();
-        }
+        }catch(SQLException e){ }
     }
 
     public void markBatchedLink_CrawlerTable(String link){
@@ -183,18 +174,12 @@ public class DBManager {
             pstmt.setBoolean(1, true);
             pstmt.setString(2, link);
             pstmt.executeUpdate();
-            //System.out.println("Link update");
-        }catch(SQLException e){
-            //e.printStackTrace();
-        }
+        }catch(SQLException e){ }
     }
 
     public boolean checkLink_CrawlerTable(String link){
         boolean canAddToDB = false;
-        //System.out.println("link: "+link);
-        //System.out.println("link2: "+link.length());
         if(link == null || link =="" || link ==" " || link.length()==0 || link.length() >= 255){
-            //System.out.println("linkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk");
             return false;
         }
         try{
@@ -206,20 +191,10 @@ public class DBManager {
                 //check if downloadable link
                 URL url = new URL(link);
                 new BufferedReader(new InputStreamReader(url.openStream()));
-
                 canAddToDB = true;
-                //System.out.println("Valid");
-            }
-            else{
-                //System.out.println("Invalid");
             }
         }
-        catch(SQLException e){
-            //e.printStackTrace();
-        }
-        catch (IOException io) {
-            //System.out.println("Error");
-        }
+        catch(Exception e){ }
         return canAddToDB;
     }
 
@@ -232,9 +207,7 @@ public class DBManager {
                 return result.getInt("count");
             } 
         }
-        catch(SQLException e){
-            //e.printStackTrace();
-        }
+        catch(SQLException e){ }
         return -1;
     }
 
@@ -248,9 +221,7 @@ public class DBManager {
                 return result.getString(1);
             } 
         }
-        catch(SQLException e){
-            //e.printStackTrace();
-        }
+        catch(SQLException e){ }
         return "";
     }
 
@@ -263,18 +234,12 @@ public class DBManager {
             pstmt.setBoolean(2, true); 
             pstmt.setInt(3, numberOfReqLinks); 
             ResultSet result = pstmt.executeQuery();
-            //int i=0;
             while(result.next()){
-                //i++;
-                //System.out.println("Number in queue: "+i);
                 int id = result.getInt(1);
                 queue.add(id);
             }
-
         }
-        catch(SQLException e){
-            //e.printStackTrace();
-        }
+        catch(SQLException e){ }
         return queue;
     }
 
@@ -287,9 +252,7 @@ public class DBManager {
                 return result.getInt("count");
             } 
         }
-        catch(SQLException e){
-            //e.printStackTrace();
-        }
+        catch(SQLException e){ }
         return -1;
     }
 
@@ -305,9 +268,7 @@ public class DBManager {
                 return result.getInt("count");
             } 
         }
-        catch(SQLException e){
-            //e.printStackTrace();
-        }
+        catch(SQLException e){ }
         return -1;
     }
 
@@ -321,9 +282,7 @@ public class DBManager {
                 return result.getInt("count");
             } 
         }
-        catch(SQLException e){
-            //e.printStackTrace();
-        }
+        catch(SQLException e){ }
         return -1;
     }
     
@@ -337,9 +296,7 @@ public class DBManager {
                 return result.getInt("count");
             } 
         }
-        catch(SQLException e){
-            //e.printStackTrace();
-        }
+        catch(SQLException e){ }
         return -1;
     }
     
@@ -352,10 +309,7 @@ public class DBManager {
             pstmt.setBoolean(2, false); 
             pstmt.setInt(3, numberOfReqLinks); 
             ResultSet result = pstmt.executeQuery();
-            //int i=0;
             while(result.next()){
-                //i++;
-                //System.out.println("Number in queue: "+i);
                 int id = result.getInt(1);
                 String linkToVisit = result.getString(2);
                 linkAndID temp = new linkAndID(linkToVisit,id);
@@ -368,9 +322,7 @@ public class DBManager {
             }
 
         }
-        catch(SQLException e){
-            //e.printStackTrace();
-        }
+        catch(SQLException e){ }
         return queue;
     }
     
@@ -381,10 +333,7 @@ public class DBManager {
             pstmt.setBoolean(1, true);
             pstmt.setInt(2, id);
             pstmt.executeUpdate();
-            //System.out.println("Link update");
-        }catch(SQLException e){
-            //e.printStackTrace();
-        }
+        }catch(SQLException e){  }
     }
     
     /******************************************************* Links Table  ***********************************************************/
@@ -398,9 +347,7 @@ public class DBManager {
                 return result.getInt("count");
             } 
         }
-        catch(SQLException e){
-            //e.printStackTrace();
-        }
+        catch(SQLException e){ }
         return -1;
     }
     
@@ -415,13 +362,10 @@ public class DBManager {
                 return result.getInt("count");
             } 
         }
-        catch(SQLException e){
-            //e.printStackTrace();
-        }
+        catch(SQLException e){ }
         return -1;
     }
 
-    
     /******************************************************* Words Table  ***********************************************************/
     
     public int getWordID_WordsTable(String word){
@@ -434,9 +378,7 @@ public class DBManager {
                 return result.getInt(1);
             } 
         }
-        catch(SQLException e){
-            e.printStackTrace();
-        }
+        catch(SQLException e){ }
         return -1;
     }
 
@@ -449,9 +391,7 @@ public class DBManager {
             PreparedStatement pstmt = conn.prepareStatement(sql);
             pstmt.setString(1, word);
             pstmt.executeUpdate();
-        }catch(SQLException e){
-            e.printStackTrace();
-        }
+        }catch(SQLException e){  }
     }
     
     public void addIDF_WordsTable(int id, float idf){
@@ -465,9 +405,7 @@ public class DBManager {
             pstmt.setInt(2, id);
             pstmt.executeUpdate();
 
-        }catch(SQLException e){
-            e.printStackTrace();
-        }
+        }catch(SQLException e){  }
     }
 
     public void addLink_WordsTable(String URL,int TF,int Plain,int Header,int Title,String Name){
@@ -478,7 +416,6 @@ public class DBManager {
         }
             
         try{
-            //System.out.println(wordID);
             String sql = "INSERT INTO links " +
                          "(URL, TF, Plain, Header, Title, Word_id)"+
                          "VALUES(?,?,?,?,?,?)";
@@ -491,16 +428,13 @@ public class DBManager {
             pstmt.setInt(5, Title);
             pstmt.setInt(6, wordID);
             pstmt.executeUpdate();
-        }catch(SQLException e){
-            //e.printStackTrace();
-        }
+        }catch(SQLException e){ }
 
 		int totalDocNum = getAllLinksCount_CrawlerTable();
 		int totalDocNUMForWord = getAllLinksCountByID_LinksTable(wordID);
 		float IDF= ((float)totalDocNum/(float)totalDocNUMForWord);
         addIDF_WordsTable(wordID, IDF);
 	}
-
     public static void main(String[] args) {
         DBManager DB = new DBManager();
         DB.dropTables();

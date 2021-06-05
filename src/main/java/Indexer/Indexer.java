@@ -59,9 +59,7 @@ public class Indexer implements Runnable {
         }
         try {
             words.removeAll(loadStopwords());
-        } catch (IOException e1) {
-            e1.printStackTrace();
-        }
+        } catch (IOException e1) { }
         return words;
     }
 
@@ -105,7 +103,6 @@ public class Indexer implements Runnable {
                 title = titleWordsFrequency.get(word);
             }
             String link = DB.getLinkFromID_CrawlerTable(pageID);
-            //System.out.println("Word= "+word+" , Link : "+link);
             DB.addLink_WordsTable(link, text+header+title, text, header, title, word);
         }
     }
@@ -127,29 +124,18 @@ public class Indexer implements Runnable {
                 ArrayList<String> words = removeStopWords(elements[i]);
                 if(i==0){
                     stemWords(headersWordsFrequency, words);
-                    //System.out.print("headers \n");
-                    //System.out.print(headersWordsFrequency);
-                    //System.out.print("\n");
                 }
                 else if(i==1){
                     stemWords(textWordsFrequency, words);
-                    //System.out.print("text \n");
-                    //System.out.print(textWordsFrequency);
-                    //System.out.print("\n");
                 }
                 else {
                     stemWords(titleWordsFrequency, words);
-                    //System.out.print("title \n");
-                    //System.out.print(titleWordsFrequency);
-                    //System.out.print("\n");
                 }
                 
             }
             addToDataBase(pageId);
         }
-        catch (IOException e) {
-            e.printStackTrace();
-        }
+        catch (IOException e) { }
     }
 
     public void indexerMain(){
@@ -157,7 +143,7 @@ public class Indexer implements Runnable {
         int batchedLinks = DB.getTotalNumberOfBatchedLinks();
         int downloadedLinks = DB.getTotalNumberOfDownloadedLinks_CrawlerTable();
         int indexedLinks = DB.getTotalNumberOfIndexedLinks_CrawlerTable();
-        //System.out.println("batchedLinks "+batchedLinks+"downloadedLinks "+downloadedLinks+"indexedLinks "+indexedLinks);
+
         while( !((batchedLinks == downloadedLinks) && (indexedLinks == downloadedLinks) && (batchedLinks == downloadedLinks)) ){
             if(queue.size()!=0){
                 String filePath = "./downloaded/page_";
@@ -171,7 +157,6 @@ public class Indexer implements Runnable {
                 headersWordsFrequency.clear();
                 textWordsFrequency.clear();
                 titleWordsFrequency.clear();
-                System.out.println("Link with id "+id+" finished indexing!");
             }
             else if(queue.size()==0){
                 queue = DB.getLinksToVisitIndexer_CrawlerTable(5);
@@ -180,65 +165,11 @@ public class Indexer implements Runnable {
     }
     
     public void run(){
-        try {
-            Thread.sleep(5000);
-        } catch (InterruptedException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
         indexerMain();
-        System.out.println("Indexer Finished");
     }
     public static void main(String args[]) throws IOException {
-        /*Indexer i1 = new Indexer();
-        Queue<Integer> queue = i1.DB.getLinksToVisitIndexer_CrawlerTable(5);
-        while(queue.size()!=0){
-            String filePath = "./downloaded/page_";
-            int id = queue.poll();
-            filePath = filePath + Integer.toString(id) + ".html";
-            i1.index(filePath);
-            i1.DB.markIndexedLink_CrawlerTable(id);
-            if(queue.size()==0){
-                queue = i1.DB.getLinksToVisitIndexer_CrawlerTable(5);
-            }
-            System.out.println("Link with id "+id+" finished indexing!");
-            (batchedLinks != downloadedLinks) && (indexedLinks != downloadedLinks) && (batchedLinks != downloadedLinks)
-        }*/
-        //Indexer i1 = new Indexer();
-        //i1.index("./downloaded/page_5.html");
-        BufferedReader in = new BufferedReader(new FileReader("./downloaded/page_3.html"));
-        StringBuilder contentBuilder = new StringBuilder();
-
-        String str;
-        while ((str = in.readLine()) != null) {
-            contentBuilder.append(str);
-        }
-        in.close();
-        String content = contentBuilder.toString();
-        Document doc = Jsoup.parse(content);
-        Elements elements = doc.body().select("*");
-        String paragraph = "";
-        for (Element element : elements) {
-            if(element.ownText().contains("get")){
-                if((paragraph+element.ownText()).length()<=300){
-                    String temp = element.ownText();
-                    if(temp.endsWith(".")){
-                        temp = temp.replaceAll("\\.",". ");
-                    }
-                    else{
-                        temp += ". ";
-                    }
-                    paragraph+=temp;
-                }
-                else{
-                    break;
-                }
-                System.out.println(element.ownText());
-            }
-        }
-        paragraph = paragraph.trim().replaceAll(" +", " ");
-
-        System.out.println("OUT: "+paragraph);
+        Indexer i1 = new Indexer();
+        i1.index("./downloaded/page_5.html");
     }
 }
 
