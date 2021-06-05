@@ -348,13 +348,19 @@ function SearchingPage() {
       }, [currentText]);
 
       useEffect(() => {
-          if(searchText!==""){
+        //   if(searchText==="" || searchText===" " || searchText==="  "){
+        //     alert("please enter a valid search input not an empty string!")
+        //   }
+        //   else 
+          if(searchText!=="" && searchText!==" " && searchText!=="  "){
+        // if(searchText!==""){
               axios.get("http://localhost:9090/Length/"+searchText)    
               .then(res => {
                 if(res.status===200)
                 {
                   //   console.log("length req: "+res.data.Count)
                       setPostsLength(res.data.Count);
+                      console.log("search length: "+res.data.Count);
                 }
                 else
                 {
@@ -377,7 +383,7 @@ function SearchingPage() {
                 .then(res => {
                   if(res.status===200)
                   {
-                    console.log("res inside length: "+res.data.length);
+                    console.log("page length: "+res.data.length);
                     console.log("currpage: "+currentPage);
                     setPosts(res.data);
                     // setPostsLength(res.data.length);
@@ -412,11 +418,11 @@ function SearchingPage() {
         setCurrentPage(1);
     }
     function speechRecHandler(t){
-        localStorage.setItem('text', t);
-        localStorage.setItem('currentPage', 1);
         setCurrentText(t)
         setSearchText(t);
         setCurrentPage(1);
+        localStorage.setItem('text', t);
+        localStorage.setItem('currentPage', 1);
     }
   return (
     <div className="searching-page">
@@ -442,7 +448,7 @@ function SearchingPage() {
                         ""
                         :
                         dataListName.map((post,num) => (
-                            <option value={post.name}/>
+                            <option value={post.word}/>
                           ))
                     }
                 </datalist>
@@ -453,18 +459,24 @@ function SearchingPage() {
             />
         </div>
         {
-            currentPosts.length === 0?
-            ""
-            :
-            <div className='container mt-5'>
-                {/* <h1 className='text-primary mb-3'>Results</h1> */}
-                <Posts posts={currentPosts} loading={loading} />
-                <Pagination
-                    postsPerPage={postsPerPage}
-                    totalPosts={postsLength}
-                    paginate={paginate}
-                />
-            </div>
+                loading === true? 
+                    <h1 className='text-primary mb-3 mt-5 pt-5'>Searching...</h1> 
+                :
+                <div className='container mt-3'>
+                    {
+                        postsLength?
+                        <h3 className='text-primary mb-5'>Your searched word has {postsLength} results</h3> 
+                        :
+                        <h3 className='text-primary mb-5'>Your searched word has no results</h3>
+                    }
+                    <Posts posts={currentPosts} loading={loading} />
+                    <Pagination
+                        postsPerPage={postsPerPage}
+                        totalPosts={postsLength}
+                        loading={loading}
+                        paginate={paginate}
+                    />
+                </div>
         }
     </div>
   );

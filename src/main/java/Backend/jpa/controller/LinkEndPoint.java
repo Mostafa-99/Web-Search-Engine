@@ -29,7 +29,7 @@ public ResponseEntity<?> getNumlinks(@PathVariable String WordName) {
 
     try {
         if(loadStopwords().contains(string))
-            string=null;
+            string="";
 
     } catch (IOException e) {
         e.printStackTrace();

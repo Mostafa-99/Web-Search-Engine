@@ -14,12 +14,12 @@ const Posts = ({ posts, loading }) => {
         posts.map((post,num) => (
           <li key={post.id} className='list-group-item'>
             <div class="card">
-              <h5 class="card-header">{num+1}</h5>
+              <h5 class="card-header"></h5>
               <div class="card-body">
-                <h5 class="card-title">{post.url}</h5>
-                <p class="card-text mt-3">Your Searched word appeared {post.tf} times on this website.</p>
-                {/* <p class="card-text">With supporting text below as a natural lead-in to additional content.</p> */}
-                <a href={post.url} class="btn btn-primary">{post.url}</a>
+                <h5 class="card-title">{post.Title}</h5>
+                <p class="card-text">{post.description}</p>
+                <p class="card-text mt-3">Your Searched word appeared {post.TF} times on this website.</p>
+                <a href={post.URL} class="btn btn-primary">{post.URL}</a>
               </div>
             </div>
           </li>
