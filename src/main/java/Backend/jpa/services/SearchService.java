@@ -81,7 +81,7 @@ public class SearchService {
 					}
 				}
 				if((paragraph).length()>1000){
-					paragraph = paragraph.substring(0, 300);
+					paragraph = paragraph.substring(0, 200);
 				}
 				paragraph = paragraph.trim().replaceAll(" +", " ");
 		
