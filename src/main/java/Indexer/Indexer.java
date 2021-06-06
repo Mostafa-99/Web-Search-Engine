@@ -157,6 +157,7 @@ public class Indexer implements Runnable {
                 headersWordsFrequency.clear();
                 textWordsFrequency.clear();
                 titleWordsFrequency.clear();
+                System.out.println("Link with id "+id+" finished indexing!");
             }
             else if(queue.size()==0){
                 queue = DB.getLinksToVisitIndexer_CrawlerTable(5);
@@ -168,8 +169,9 @@ public class Indexer implements Runnable {
         indexerMain();
     }
     public static void main(String args[]) throws IOException {
-        Indexer i1 = new Indexer();
-        i1.index("./downloaded/page_5.html");
+        //Indexer i1 = new Indexer();
+        //i1.index("./downloaded/page_5.html");
+      
     }
 }
 

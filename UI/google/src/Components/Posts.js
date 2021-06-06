@@ -17,6 +17,7 @@ const Posts = ({ posts, loading }) => {
             <div class="card">
               <h5 class="card-header"></h5>
               <div class="card-body">
+                <a href={post.URL} class="card-title-link">{post.URL}</a>
                 <a href={post.URL} ><h5 class="card-title">{post.Title}</h5></a>
                 <p class="card-text">{post.description}</p>
                 <p id="search-number" class="card-text mt-3"><i>Your searched word appeared {post.TF} times on this website.</i></p>

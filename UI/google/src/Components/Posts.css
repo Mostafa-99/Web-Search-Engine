@@ -6,3 +6,7 @@
     color: gray;
     font-size: .8rem;
 }
+.card-title-link{
+    font-size: .8rem !important;
+    color: gray;
+}

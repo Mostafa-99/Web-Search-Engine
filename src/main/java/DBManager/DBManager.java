@@ -182,19 +182,18 @@ public class DBManager {
         if(link == null || link =="" || link ==" " || link.length()==0 || link.length() >= 255){
             return false;
         }
+        
         try{
             String sql = "SELECT * FROM crawler WHERE link=?";   
             PreparedStatement pstmt = conn.prepareStatement(sql);
             pstmt.setString(1, link); 
             ResultSet result = pstmt.executeQuery();
             if(result.next() == false){
-                //check if downloadable link
-                URL url = new URL(link);
-                new BufferedReader(new InputStreamReader(url.openStream()));
                 canAddToDB = true;
             }
         }
         catch(Exception e){ }
+
         return canAddToDB;
     }
 

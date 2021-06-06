@@ -8,11 +8,11 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 @SpringBootApplication
 @EnableJpaAuditing
-public class JpaOneToManyDemoApplication  {
+public class MainApplication  {
 
 	public static void main(String[] args) {
 		//History_Repo.deleteAll();
-		SpringApplication.run(JpaOneToManyDemoApplication.class, args);
+		SpringApplication.run(MainApplication.class, args);
 
 	}
 

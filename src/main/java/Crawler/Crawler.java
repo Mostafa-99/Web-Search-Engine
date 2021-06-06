@@ -3,7 +3,6 @@ package Crawler;
 import java.io.*;
 import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.util.Scanner;
@@ -22,12 +21,6 @@ import java.util.List;
 import java.util.Queue;
 import java.util.ArrayList;
 
-class NumberOfDownloads{
-    private int numberOfDownloads = 0;
-    void increment(){numberOfDownloads++;}
-    void setValue(int val){numberOfDownloads = val;}
-    int getValue(){ return numberOfDownloads;}
-}
 
 class robotsObj {
     public ArrayList<String> allowed;
@@ -43,7 +36,6 @@ public class Crawler implements Runnable {
     DBManager DB ;
     Queue<linkAndID> queue;
     int crawlingSize;
-    NumberOfDownloads numberOfDownloadedLinks;
     int numberOfThreads;
     int state;
     static final int RESTART = 0;
@@ -52,62 +44,29 @@ public class Crawler implements Runnable {
  
    public Crawler(int state, int numberOfThreads,  int crawlingSize){
        this.DB = new DBManager();
-       
        this.state = state;
        this.crawlingSize = crawlingSize;
        this.numberOfThreads = numberOfThreads;
     }
 
-    public Crawler(DBManager DB, Queue<linkAndID> queue, int numberOfThreads, int crawlingSize, NumberOfDownloads numberOfDownloadedLinks, Hashtable<String, robotsObj> robots){
-        this.DB= DB;
-        this.numberOfDownloadedLinks = numberOfDownloadedLinks;
+    public Crawler(Queue<linkAndID> queue, int numberOfThreads, int crawlingSize, Hashtable<String, robotsObj> robots){
+        this.DB= new DBManager();
         this.numberOfThreads = numberOfThreads;
         this.queue = queue;        
         this.robots = robots;
         this.crawlingSize = crawlingSize;
     }
     
-    public void download(String urlString, int id){
-
-        BufferedReader reader = null;
-        try {
-            URL url = new URL(urlString);
-            reader = new BufferedReader(new InputStreamReader(url.openStream()));
-            StringBuilder contentBuilder = new StringBuilder();
-
-            BufferedWriter writer = new BufferedWriter(new FileWriter("./downloaded/page_"+Integer.toString(id)+".html"));
-            String line;
-            while ((line = reader.readLine()) != null) {
-                contentBuilder.append(line);
-                writer.write(line);
-            }
-            writer.close();
-            reader.close();
-            getURLs(urlString, id, contentBuilder);
-            
-            
-        } catch (MalformedURLException e) {
-            System.out.println("Error");
-        } catch (IOException io) {
-            System.out.println("Error");
-        }
-    }
-
-    void getURLs(String linkIn,int id,StringBuilder contentBuilder){
-        Document doc;
+    void getURLs(String linkIn,int id){
         Elements links;
         try {
-            //StringBuilder contentBuilder = new StringBuilder();
-            /*BufferedReader in = new BufferedReader(new FileReader("./downloaded/page_"+Integer.toString(id)+".html"));
-            String str;
-            while ((str = in.readLine()) != null) {
-                contentBuilder.append(str);
-            }
-            in.close();*/
-            String content = contentBuilder.toString();
+            Document doc = Jsoup.connect(linkIn).get();
             
-            doc = Jsoup.parse(content);
-           
+            try {
+                FileWriter myWriter = new FileWriter("./downloaded/page_"+id+".html");
+                myWriter.write(doc.toString());
+                myWriter.close();
+            } catch (IOException e) {}
 
             links = doc.select("a");
             Element link;
@@ -116,20 +75,22 @@ public class Crawler implements Runnable {
                 String linkHref = link.attr("abs:href").toString();
                 if(linkHref!=""){
                     linkHref = normalizeURI(linkHref);
-                    synchronized(DB){
+                    try {
+                        //check if link is valid
+                        Jsoup.connect(linkHref).get();
                         boolean isValid = checkValidityOfLink(linkHref);
                         
                         if(isValid == true){
                             DB.addLink_CrawlerTable(linkHref);
                         }
-                    }
+                    } catch (Exception e) {  }    
+
+                 
                 }
             }
             DB.markVisitedLink_CrawlerTable(linkIn);
         }
-        catch (Exception e) {
-           // e.printStackTrace();
-        }
+        catch (Exception e) {  }
     }
     
     String normalizeURI(String urlStr) {
@@ -144,7 +105,6 @@ public class Crawler implements Runnable {
     }
     
     String reformRobotsPath(String path){
-
         path = path.replaceAll("\\*", ".*");
         path = path.replaceAll("=", "=.*");
         path = path.replaceAll("\\?", "\\\\"+"?");
@@ -160,36 +120,34 @@ public class Crawler implements Runnable {
             URL temp = new URL(url);
             String hostname = temp.getHost();
             if(robots.containsKey(hostname) == false){//not saved before
-                BufferedReader reader = null;
                 try {
                     String robotURL ="https://" + hostname+"/robots.txt";
-                    URL hostURL = new URL(robotURL);
-                    reader = new BufferedReader(new InputStreamReader(hostURL.openStream()));
-                    String line;
+                    Document doc = Jsoup.connect(robotURL).get();
+                    String arr[] = (doc.text()).split(" ");
                     robotsObj r = new robotsObj();
-                    while ((line = reader.readLine()) != null) {
-                        if(line.startsWith("User-agent: *")){
-                            while ((line = reader.readLine()) != null) {                                
-                                if(line.startsWith("Allow: ")){
-                                    String path = line.replaceAll("^(Allow: )", "");
+                    int i=0;
+                    while(i<arr.length){
+                        if(arr[i].equals("User-agent:") && arr[i+1].equals("*")){
+                            i+=2;
+                            while(!arr[i].equals("User-agent:") && i<arr.length){
+                                if(arr[i].equals("Allow:")){
+                                    String path = arr[i+1];
                                     path = reformRobotsPath(path);
                                     r.allowed.add(path);
                                 }
-                                else if(line.startsWith("Disallow: ")){
-                                    String path = line.replaceAll("^(Disallow: )", "");
+                                else if(arr[i].equals("Disallow:")){
+                                    String path = arr[i+1];
                                     path = reformRobotsPath(path);
                                     r.disAllowed.add(path);
                                 }
-                                else if(!line.startsWith("User-agent: *") && !line.isEmpty()){
-                                    break;
-                                }
+                                i+=2;
                             }
                         }
+                        i+=2;
                     }
                     synchronized(robots){
                         robots.put(hostname, r);
                     }
-                    reader.close();
                 } catch (Exception e) { }
             }
         }
@@ -222,6 +180,7 @@ public class Crawler implements Runnable {
             }
         }
         catch(Exception e){}
+
         return  DB.checkLink_CrawlerTable(link) && !disAllowedFlag;
     }
 
@@ -234,7 +193,7 @@ public class Crawler implements Runnable {
                     if(queue.size()==0 && DB.getTotalNumberOfBatchedLinks_CrawlerTable() <= crawlingSize && DB.getTotalNumberOfLinks_CrawlerTable()>=numberOfThreads){                        
                         int sizeRequired = crawlingSize-DB.getTotalNumberOfBatchedLinks_CrawlerTable() >= numberOfThreads ? numberOfThreads :  crawlingSize-DB.getTotalNumberOfBatchedLinks_CrawlerTable();
                         queue = DB.getLinksToVisitCrawler_CrawlerTable(sizeRequired);
-                        if(queue.size()==0 || DB.getTotalNumberOfDownloadedLinks_CrawlerTable() == crawlingSize ){
+                        if(queue.size()==0 || DB.getTotalNumberOfDownloadedLinks_CrawlerTable() >= crawlingSize || DB.getTotalNumberOfLinks_CrawlerTable()>=50000){
                             break;
                         }
                     }
@@ -244,9 +203,10 @@ public class Crawler implements Runnable {
                     
                 }
                 if(linkToVisit !=null ){
-                    System.out.println("Start download "+ Thread.currentThread().getName());
-                    download(linkToVisit.link, linkToVisit.id);
+                    System.out.println("Start download "+ Thread.currentThread().getName()+" link id="+linkToVisit.id);
+                    getURLs(linkToVisit.link,linkToVisit.id);
                     System.out.println("Finished download "+ Thread.currentThread().getName());
+                    System.out.println("************************************************************************");
                 }
             }
         }
@@ -282,7 +242,7 @@ public class Crawler implements Runnable {
         else{
             crawl();
             System.out.println("************************************************************");
-            System.out.println("Thread "+ Thread.currentThread().getName() + " Finished a link");
+            System.out.println("Thread "+ Thread.currentThread().getName() + " Finished");
             System.out.println("************************************************************");
         }
     }
@@ -298,15 +258,16 @@ public class Crawler implements Runnable {
 
         Queue<linkAndID> queue = new LinkedList<>();
         int sizeRequired = crawlingSize-DB.getTotalNumberOfBatchedLinks_CrawlerTable() >= numberOfThreads ? numberOfThreads :  crawlingSize-DB.getTotalNumberOfBatchedLinks_CrawlerTable();
-
+        System.out.println(DB.getTotalNumberOfLinks_CrawlerTable());
+        if(DB.getTotalNumberOfDownloadedLinks_CrawlerTable() >= crawlingSize || DB.getTotalNumberOfLinks_CrawlerTable()>=50000){
+            sizeRequired=0;
+        }
         queue = DB.getLinksToVisitCrawler_CrawlerTable(sizeRequired);
-        NumberOfDownloads numberOfDownloadedLinks= new NumberOfDownloads();
-        numberOfDownloadedLinks.setValue(DB.getTotalNumberOfDownloadedLinks_CrawlerTable());
         Hashtable<String, robotsObj> robots =  new Hashtable<String, robotsObj>();
 
         Thread[] threads = new Thread[numberOfThreads];
         for(int i=0;i<numberOfThreads;i++){
-            threads[i] = new Thread(new Crawler(DB,queue,numberOfThreads,crawlingSize,numberOfDownloadedLinks,robots));
+            threads[i] = new Thread(new Crawler(queue,numberOfThreads,crawlingSize,robots));
             threads[i].setName("Thread "+(i+1));
             threads[i].start();
         }
@@ -315,4 +276,14 @@ public class Crawler implements Runnable {
         }
         
     }
+
+
+    public static void main(String args[]) throws IOException {
+        Hashtable<String, robotsObj> robots =  new Hashtable<String, robotsObj>();
+        Queue<linkAndID> queue = new LinkedList<>();
+        int x = 0;
+        Crawler c =new Crawler(queue,x,x,robots);
+        c.downloadRobotTxt("https://www.amazon.com/");
+    }
+
 }

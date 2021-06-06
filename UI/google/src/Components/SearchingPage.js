@@ -10,7 +10,7 @@ import axios from 'axios';
 function SearchingPage() {
     const [posts, setPosts] = useState([]);
     const [postsLength, setPostsLength] = useState();
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
     const [currentPage, setCurrentPage] = useState(localStorage.getItem('currentPage'));
     const [postsPerPage] = useState(10);
     const [searchText,setSearchText] = useState(localStorage.getItem('text'));
@@ -54,21 +54,19 @@ function SearchingPage() {
     useEffect(() => {
         const fetchPosts = async () => {
           setLoading(true);
-
-            console.log("searching...")
-
+            
             if(searchText!==""){
                 axios.get("http://localhost:9090/Search/"+searchText+"?pageNo="+(currentPage-1))   
                 .then(res => {
                   if(res.status===200)
                   {
                     setPosts(res.data);
+                    setLoading(false);
                   }  
                 }).catch(err=>{
                     alert(err)
                 })    
             }
-          setLoading(false);
         };
         
         fetchPosts();
@@ -130,9 +128,10 @@ function SearchingPage() {
             />
         </div>
         {
-                loading === true? 
-                    <h1 className='text-primary mb-3 mt-5 pt-5'>Searching...</h1> 
-                :
+                loading == true? 
+                <div class="spinner-border text-primary mt-5" role="status">
+                <span class="sr-only"></span>
+                </div>                :
                 <div className='container mt-3'>
                     {
                         postsLength?
