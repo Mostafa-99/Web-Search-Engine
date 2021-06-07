@@ -41,20 +41,23 @@ public class Crawler implements Runnable {
     static final int RESTART = 0;
     static final int RESUME = 1;
     Hashtable<String, robotsObj> robots;
+    int DBMaxSize = 0;
  
-   public Crawler(int state, int numberOfThreads,  int crawlingSize){
+   public Crawler(int state, int numberOfThreads,  int crawlingSize, int DBMaxSize){
        this.DB = new DBManager();
        this.state = state;
        this.crawlingSize = crawlingSize;
        this.numberOfThreads = numberOfThreads;
+       this.DBMaxSize = DBMaxSize;
     }
 
-    public Crawler(Queue<linkAndID> queue, int numberOfThreads, int crawlingSize, Hashtable<String, robotsObj> robots){
+    public Crawler(Queue<linkAndID> queue, int numberOfThreads, int crawlingSize, int DBMaxSize, Hashtable<String, robotsObj> robots){
         this.DB= new DBManager();
         this.numberOfThreads = numberOfThreads;
         this.queue = queue;        
         this.robots = robots;
         this.crawlingSize = crawlingSize;
+        this.DBMaxSize = DBMaxSize;
     }
     
     void getURLs(String linkIn,int id){
@@ -67,30 +70,31 @@ public class Crawler implements Runnable {
                 myWriter.write(doc.toString());
                 myWriter.close();
             } catch (IOException e) {}
+            if(DB.getTotalNumberOfLinks_CrawlerTable()<DBMaxSize){
+                links = doc.select("a");
+                Element link;
+                for(int j=0;j<links.size();j++){
+                    link=links.get(j);
+                    String linkHref = link.attr("abs:href").toString();
+                    if(linkHref!=""){
+                        linkHref = normalizeURI(linkHref);
+                        try {
+                            //check if link is valid
+                            Jsoup.connect(linkHref).get();
+                            boolean isValid = checkValidityOfLink(linkHref);
+                            
+                            if(isValid == true){
+                                DB.addLink_CrawlerTable(linkHref);
+                            }
+                        } catch (Exception e) {  }    
 
-            links = doc.select("a");
-            Element link;
-            for(int j=0;j<links.size();j++){
-                link=links.get(j);
-                String linkHref = link.attr("abs:href").toString();
-                if(linkHref!=""){
-                    linkHref = normalizeURI(linkHref);
-                    try {
-                        //check if link is valid
-                        Jsoup.connect(linkHref).get();
-                        boolean isValid = checkValidityOfLink(linkHref);
-                        
-                        if(isValid == true){
-                            DB.addLink_CrawlerTable(linkHref);
-                        }
-                    } catch (Exception e) {  }    
-
-                 
+                    
+                    }
                 }
             }
             DB.markVisitedLink_CrawlerTable(linkIn);
         }
-        catch (Exception e) {  }
+        catch (Exception e) {  getURLs(linkIn,id); }
     }
     
     String normalizeURI(String urlStr) {
@@ -193,7 +197,7 @@ public class Crawler implements Runnable {
                     if(queue.size()==0 && DB.getTotalNumberOfBatchedLinks_CrawlerTable() <= crawlingSize && DB.getTotalNumberOfLinks_CrawlerTable()>=numberOfThreads){                        
                         int sizeRequired = crawlingSize-DB.getTotalNumberOfBatchedLinks_CrawlerTable() >= numberOfThreads ? numberOfThreads :  crawlingSize-DB.getTotalNumberOfBatchedLinks_CrawlerTable();
                         queue = DB.getLinksToVisitCrawler_CrawlerTable(sizeRequired);
-                        if(queue.size()==0 || DB.getTotalNumberOfDownloadedLinks_CrawlerTable() >= crawlingSize || DB.getTotalNumberOfLinks_CrawlerTable()>=50000){
+                        if(queue.size()==0 || DB.getTotalNumberOfDownloadedLinks_CrawlerTable() >= crawlingSize){
                             break;
                         }
                     }
@@ -203,10 +207,10 @@ public class Crawler implements Runnable {
                     
                 }
                 if(linkToVisit !=null ){
-                    System.out.println("Start download "+ Thread.currentThread().getName()+" link id="+linkToVisit.id);
+                    //System.out.println("Start download "+ Thread.currentThread().getName()+" link id="+linkToVisit.id);
                     getURLs(linkToVisit.link,linkToVisit.id);
-                    System.out.println("Finished download "+ Thread.currentThread().getName());
-                    System.out.println("************************************************************************");
+                    //System.out.println("Finished download "+ Thread.currentThread().getName());
+                    //System.out.println("************************************************************************");
                 }
             }
         }
@@ -241,9 +245,9 @@ public class Crawler implements Runnable {
         }
         else{
             crawl();
-            System.out.println("************************************************************");
-            System.out.println("Thread "+ Thread.currentThread().getName() + " Finished");
-            System.out.println("************************************************************");
+            //System.out.println("************************************************************");
+            //System.out.println("Thread "+ Thread.currentThread().getName() + " Finished");
+            //System.out.println("************************************************************");
         }
     }
 
@@ -258,8 +262,8 @@ public class Crawler implements Runnable {
 
         Queue<linkAndID> queue = new LinkedList<>();
         int sizeRequired = crawlingSize-DB.getTotalNumberOfBatchedLinks_CrawlerTable() >= numberOfThreads ? numberOfThreads :  crawlingSize-DB.getTotalNumberOfBatchedLinks_CrawlerTable();
-        System.out.println(DB.getTotalNumberOfLinks_CrawlerTable());
-        if(DB.getTotalNumberOfDownloadedLinks_CrawlerTable() >= crawlingSize || DB.getTotalNumberOfLinks_CrawlerTable()>=50000){
+        //System.out.println(DB.getTotalNumberOfLinks_CrawlerTable());
+        if(DB.getTotalNumberOfDownloadedLinks_CrawlerTable() >= crawlingSize){
             sizeRequired=0;
         }
         queue = DB.getLinksToVisitCrawler_CrawlerTable(sizeRequired);
@@ -267,7 +271,7 @@ public class Crawler implements Runnable {
 
         Thread[] threads = new Thread[numberOfThreads];
         for(int i=0;i<numberOfThreads;i++){
-            threads[i] = new Thread(new Crawler(queue,numberOfThreads,crawlingSize,robots));
+            threads[i] = new Thread(new Crawler(queue,numberOfThreads,crawlingSize, DBMaxSize,robots));
             threads[i].setName("Thread "+(i+1));
             threads[i].start();
         }
@@ -282,7 +286,7 @@ public class Crawler implements Runnable {
         Hashtable<String, robotsObj> robots =  new Hashtable<String, robotsObj>();
         Queue<linkAndID> queue = new LinkedList<>();
         int x = 0;
-        Crawler c =new Crawler(queue,x,x,robots);
+        Crawler c =new Crawler(queue,x,x,0,robots);
         c.downloadRobotTxt("https://www.amazon.com/");
     }
 

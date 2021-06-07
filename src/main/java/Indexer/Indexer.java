@@ -157,7 +157,7 @@ public class Indexer implements Runnable {
                 headersWordsFrequency.clear();
                 textWordsFrequency.clear();
                 titleWordsFrequency.clear();
-                System.out.println("Link with id "+id+" finished indexing!");
+                //System.out.println("Link with id "+id+" finished indexing!");
             }
             else if(queue.size()==0){
                 queue = DB.getLinksToVisitIndexer_CrawlerTable(5);

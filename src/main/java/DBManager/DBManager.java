@@ -8,9 +8,7 @@ import java.sql.Statement;
 import java.sql.*;
 import java.util.LinkedList;
 import java.util.Queue;
-import java.net.URL;
-import java.io.*;
-import java.io.IOException;
+
 
 public class DBManager {
     static final String DB_URL = "jdbc:mysql://localhost:3306/apt";
