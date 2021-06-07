@@ -94,7 +94,7 @@ public class Crawler implements Runnable {
             }
             DB.markVisitedLink_CrawlerTable(linkIn);
         }
-        catch (Exception e) {  getURLs(linkIn,id); }
+        catch (Exception e) {  DB.markVisitedLink_CrawlerTable(linkIn); }
     }
     
     String normalizeURI(String urlStr) {
