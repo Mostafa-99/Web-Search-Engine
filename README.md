@@ -13,8 +13,10 @@ Before any step please clean and reinstall the project using maven.
 Note: you can limit the number of links you want to add to the database using DBMaxSize variable
 
 ## For Running the backend
-1* Go to ./src/main/resources
-2* Open application.properties and change username and password
+1- Go to ./src/main/resources
+
+2- Open application.properties and change username and password
+
 3- Go to ./src/main/java/Backend/jpa
 4- Open MainApplication.java
 5- Run java
