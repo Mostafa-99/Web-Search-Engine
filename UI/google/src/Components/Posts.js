@@ -2,9 +2,9 @@ import React from 'react';
 import "./Posts.css"
 
 const Posts = ({ posts, loading }) => {
-  if (loading) {
-    return <h2>Loading...</h2>;
-  }
+  // if (loading) {
+  //   return <h2>Loading...</h2>;
+  // }
 
   return (
     <ul className='list-group mb-4'>

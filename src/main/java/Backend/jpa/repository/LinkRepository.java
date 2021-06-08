@@ -16,6 +16,6 @@ public interface LinkRepository extends JpaRepository<Links,String> {
     public Float getLinkCountByID(@Param("WORDID")Long WORDID);
     @Query(value = "select count(*) from links where word_id=:WORDID",nativeQuery = true)
     public Long findCountByID(@Param("WORDID")Long WORDID);
-    @Query(value = "select * from links where word_id=:WORDID",nativeQuery = true)
-    public Links[] findALLLinks(@Param("WORDID")Long WORDID);
+    @Query(value = "select * from links where word_id=:WORDID LIMIT 10 OFFSET :pageNo",nativeQuery = true)
+    public Links[] findALLLinks(@Param("WORDID")Long WORDID,@Param("pageNo")int pageNo);
 }
