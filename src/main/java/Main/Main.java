@@ -22,7 +22,7 @@ public class Main {
         mainCrawlerThread.setName("Thread 0");
         mainCrawlerThread.start();
         mainCrawlerThread.join();
-        System.out.println("Crawler finished "+crawlingSize+" link with max number of links= "+DBMaxSize+ " in DB");
+        System.out.println("Crawler finished "+crawlingSize+" link");
         mainIndexerThread.start();
         mainIndexerThread.join();
         System.out.println("Indexer finished");
