@@ -129,9 +129,10 @@ function SearchingPage() {
         </div>
         {
                 loading == true? 
-                <div class="spinner-border text-primary mt-5" role="status">
-                <span class="sr-only"></span>
-                </div>                :
+                    <div class="spinner-border text-primary mt-5" role="status">
+                    <span class="sr-only"></span>
+                    </div>                
+                :
                 <div className='container mt-3'>
                     {
                         postsLength?

@@ -13,7 +13,7 @@ import java.util.Queue;
 public class DBManager {
     static final String DB_URL = "jdbc:mysql://localhost:3306/apt";
     static final String USER = "root";
-    static final String PASS = "123456";
+    static final String PASS = "admin12345";
     static Connection conn;
     
     public class linkAndID {
