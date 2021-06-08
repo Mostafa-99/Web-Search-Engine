@@ -49,7 +49,7 @@
     var post_id = "0";
     var post_type = "post";
     var post_slug = window.location.href;
-    var ip = "54.212.90.185";
+    var ip = "64.252.114.210";
     var post_title = "Must Do Coding Questions for Product Based Companies";
     var post_status = "publish";
     var post_date = "2021-05-16 18:53:37";
@@ -69,7 +69,7 @@
 			!function(a,b,c){function d(a,b){var c=String.fromCharCode;l.clearRect(0,0,k.width,k.height),l.fillText(c.apply(this,a),0,0);var d=k.toDataURL();l.clearRect(0,0,k.width,k.height),l.fillText(c.apply(this,b),0,0);var e=k.toDataURL();return d===e}function e(a){var b;if(!l||!l.fillText)return!1;switch(l.textBaseline="top",l.font="600 32px Arial",a){case"flag":return!(b=d([55356,56826,55356,56819],[55356,56826,8203,55356,56819]))&&(b=d([55356,57332,56128,56423,56128,56418,56128,56421,56128,56430,56128,56423,56128,56447],[55356,57332,8203,56128,56423,8203,56128,56418,8203,56128,56421,8203,56128,56430,8203,56128,56423,8203,56128,56447]),!b);case"emoji":return b=d([55358,56760,9792,65039],[55358,56760,8203,9792,65039]),!b}return!1}function f(a){var c=b.createElement("script");c.src=a,c.defer=c.type="text/javascript",b.getElementsByTagName("head")[0].appendChild(c)}var g,h,i,j,k=b.createElement("canvas"),l=k.getContext&&k.getContext("2d");for(j=Array("flag","emoji"),c.supports={everything:!0,everythingExceptFlag:!0},i=0;i<j.length;i++)c.supports[j[i]]=e(j[i]),c.supports.everything=c.supports.everything&&c.supports[j[i]],"flag"!==j[i]&&(c.supports.everythingExceptFlag=c.supports.everythingExceptFlag&&c.supports[j[i]]);c.supports.everythingExceptFlag=c.supports.everythingExceptFlag&&!c.supports.flag,c.DOMReady=!1,c.readyCallback=function(){c.DOMReady=!0},c.supports.everything||(h=function(){c.readyCallback()},b.addEventListener?(b.addEventListener("DOMContentLoaded",h,!1),a.addEventListener("load",h,!1)):(a.attachEvent("onload",h),b.attachEvent("onreadystatechange",function(){"complete"===b.readyState&&c.readyCallback()})),g=c.source||{},g.concatemoji?f(g.concatemoji):g.wpemoji&&g.twemoji&&(f(g.twemoji),f(g.wpemoji)))}(window,document,window._wpemojiSettings);
 		</script>
   <style>img.wp-smiley,img.emoji{display:inline!important;border:none!important;box-shadow:none!important;height:1em!important;width:1em!important;margin:0 .07em!important;vertical-align:-.1em!important;background:0 0!important;padding:0!important}</style>
-  <link rel="stylesheet" id="custom-style-css" href="https://www.geeksforgeeks.org/wp-content/themes/iconic-one/css/gfg.min.css?ver=8.47" media="all">
+  <link rel="stylesheet" id="custom-style-css" href="https://www.geeksforgeeks.org/wp-content/themes/iconic-one/css/gfg.min.css?ver=8.48" media="all">
   <script src="https://code.jquery.com/jquery-3.1.1.min.js?ver=3.1.1"></script>
   <script src="https://code.jquery.com/jquery-migrate-3.0.0.min.js?ver=3.0.0"></script>
   <script>
@@ -77,7 +77,7 @@
 var gfgObject = {"authUrl":"https:\/\/auth.geeksforgeeks.org\/","writeApiUrl":"https:\/\/apiwrite.geeksforgeeks.org\/","writeUrl":"https:\/\/write.geeksforgeeks.org\/","utilUrl":"https:\/\/util.geeksforgeeks.org\/","apiUrl":"https:\/\/api.geeksforgeeks.org\/"};
 /* ]]> */
 </script>
-  <script async src="https://www.geeksforgeeks.org/wp-content/themes/iconic-one/js/gfg.min.js?ver=10.68"></script>
+  <script async src="https://www.geeksforgeeks.org/wp-content/themes/iconic-one/js/gfg.min.js?ver=10.69"></script>
   <link rel="https://api.w.org/" href="https://www.geeksforgeeks.org/wp-json/">
   <link rel="edituri" type="application/rsd+xml" title="RSD" href="https://www.cdn.geeksforgeeks.org/xmlrpc.php?rsd">
   <link rel="wlwmanifest" type="application/wlwmanifest+xml" href="https://www.cdn.geeksforgeeks.org/wp-includes/wlwmanifest.xml">
@@ -97,7 +97,43 @@ var gfgObject = {"authUrl":"https:\/\/auth.geeksforgeeks.org\/","writeApiUrl":"h
   gtag('config', 'AW-474915276');
 </script>
  </head>
- <body class="blog custom-background custom-background-white" data-dark-mode="false">
+ <body class="blog custom-background custom-background-white">
+  <script>
+        // Dark mode script
+        const gfgThemeList = Object.freeze({
+            LIGHT: "gfgThemeLight",
+            DARK: "gfgThemeDark"
+        })
+        const getThemeFromCookie = () => {
+            let gfg_def_theme = "";
+            let cookies = document.cookie;
+            let cooks = cookies.split(";");
+        
+            for (let i = 0; i < cooks.length; i++) {
+                let icook = cooks[i].split("=");
+                if (icook[0].trim() == "gfg_theme") {
+                    gfg_def_theme = icook[1].trim();
+                }
+            }
+            return gfg_def_theme
+        }
+        const toggleNineDotMenuImages = theme => {
+            jQuery(".nineDot-menu_left .nineDot-menu_item").each((e, element) => {
+                let item = jQuery(element).find("img")
+                let imageSrc = item.attr("src")
+                let [mainImg, extractImage] = /(.*)\.svg/g.exec(imageSrc)
+                if (!mainImg.includes("%40dark") && theme === gfgThemeList.DARK) {
+                    mainImg = `${extractImage}%40dark.svg`;
+                }
+                else if(mainImg.includes("%40dark") && theme === gfgThemeList.LIGHT) {
+                    mainImg = `${extractImage.substr(0, extractImage.length - 7)}.svg`;
+                }
+                item.attr("src", mainImg)
+            })
+        }
+        var isDarkMode = getThemeFromCookie() == gfgThemeList.DARK ? true : false;
+        document.querySelector("body").setAttribute("data-dark-mode", isDarkMode);
+    </script>
   <div class="header-main__wrapper">
    <a class="gfg-stc" style="top:0" href="#main">Skip to content</a> <a href="https://www.geeksforgeeks.org/" aria-label="Logo" class="header-main__logo">
     <div class="_logo">
@@ -277,11 +313,12 @@ var gfgObject = {"authUrl":"https:\/\/auth.geeksforgeeks.org\/","writeApiUrl":"h
            <li class="mega-dropdown__list-item" aria-expanded="false" data-expandable="false"><a href="https://www.geeksforgeeks.org/mensuration/?ref=ghm" target="_self">Mensuration</a></li>
            <li class="mega-dropdown__list-item" aria-expanded="false" data-expandable="false"><a href="https://www.geeksforgeeks.org/calculus/?ref=ghm" target="_self">Calculus</a></li>
           </ul></li>
-         <li class="mega-dropdown__list-item" data-child="true" aria-expanded="false" data-expandable="true"><span>Maths Notes (Class 8-10)</span> <i class="gfg-icon gfg-icon_arrow-right"></i>
+         <li class="mega-dropdown__list-item" data-child="true" aria-expanded="false" data-expandable="true"><span>Maths Notes (Class 8-11)</span> <i class="gfg-icon gfg-icon_arrow-right"></i>
           <ul class="mega-dropdown">
            <li class="mega-dropdown__list-item" aria-expanded="false" data-expandable="false"><a href="https://www.geeksforgeeks.org/cbse-class-8-maths-notes/?ref=ghm" target="_self">Class 8 Notes</a></li>
            <li class="mega-dropdown__list-item" aria-expanded="false" data-expandable="false"><a href="https://www.geeksforgeeks.org/cbse-class-9-maths-notes/?ref=ghm" target="_self">Class 9 Notes</a></li>
            <li class="mega-dropdown__list-item" aria-expanded="false" data-expandable="false"><a href="https://www.geeksforgeeks.org/cbse-class-10-maths-notes/?ref=ghm" target="_self">Class 10 Notes</a></li>
+           <li class="mega-dropdown__list-item" aria-expanded="false" data-expandable="false"><a href="https://www.geeksforgeeks.org/cbse-class-11-maths-notes/?ref=ghm" target="_self">Class 11 Notes</a></li>
           </ul></li>
          <li class="mega-dropdown__list-item" data-child="true" aria-expanded="false" data-expandable="true"><span>NCERT Solutions</span> <i class="gfg-icon gfg-icon_arrow-right"></i>
           <ul class="mega-dropdown">
@@ -294,10 +331,10 @@ var gfgObject = {"authUrl":"https:\/\/auth.geeksforgeeks.org\/","writeApiUrl":"h
          <li class="mega-dropdown__list-item" data-child="true" aria-expanded="false" data-expandable="true"><span>RD Sharma Solutions</span> <i class="gfg-icon gfg-icon_arrow-right"></i>
           <ul class="mega-dropdown">
            <li class="mega-dropdown__list-item" aria-expanded="false" data-expandable="false"><a href="https://www.geeksforgeeks.org/rd-sharma-class-8-solutions-for-maths/?ref=ghm" target="_self">Class 8 Maths Solution</a></li>
-           <li class="mega-dropdown__list-item" aria-expanded="false" data-expandable="false"><a href="https://www.geeksforgeeks.org/tag/rd-sharma-class-9/?ref=ghm" target="_self">Class 9 Maths Solution</a></li>
-           <li class="mega-dropdown__list-item" aria-expanded="false" data-expandable="false"><a href="https://www.geeksforgeeks.org/tag/rd-sharma-class-10/?ref=ghm" target="_self">Class 10 Maths Solution</a></li>
-           <li class="mega-dropdown__list-item" aria-expanded="false" data-expandable="false"><a href="https://www.geeksforgeeks.org/tag/rd-sharma-class-11/?ref=ghm" target="_self">Class 11 Maths Solution</a></li>
-           <li class="mega-dropdown__list-item" aria-expanded="false" data-expandable="false"><a href="https://www.geeksforgeeks.org/tag/rd-sharma-class-12/?ref=ghm" target="_self">Class 12 Maths Solution</a></li>
+           <li class="mega-dropdown__list-item" aria-expanded="false" data-expandable="false"><a href="https://www.geeksforgeeks.org/rd-sharma-class-9-solutions/?ref=ghm" target="_self">Class 9 Maths Solution</a></li>
+           <li class="mega-dropdown__list-item" aria-expanded="false" data-expandable="false"><a href="https://www.geeksforgeeks.org/rd-sharma-class-10-solutions/?ref=ghm" target="_self">Class 10 Maths Solution</a></li>
+           <li class="mega-dropdown__list-item" aria-expanded="false" data-expandable="false"><a href="https://www.geeksforgeeks.org/rd-sharma-class-11-solutions-for-maths/?ref=ghm" target="_self">Class 11 Maths Solution</a></li>
+           <li class="mega-dropdown__list-item" aria-expanded="false" data-expandable="false"><a href="https://www.geeksforgeeks.org/rd-sharma-class-12-solutions-for-maths/?ref=ghm" target="_self">Class 12 Maths Solution</a></li>
           </ul></li>
         </ul></li>
       </ul></li>
@@ -376,6 +413,10 @@ var gfgObject = {"authUrl":"https:\/\/auth.geeksforgeeks.org\/","writeApiUrl":"h
             Come and find your dream job with us
            </div>
           </div></a>
+         <script>
+                                    // Toggle Nine dot menu icons
+                                    toggleNineDotMenuImages(isDarkMode ? gfgThemeList.DARK : gfgThemeList.LIGHT)
+                                </script>
         </div>
         <div class="nineDot-menu_right">
          <ul>
@@ -430,7 +471,10 @@ var gfgObject = {"authUrl":"https:\/\/auth.geeksforgeeks.org\/","writeApiUrl":"h
      <li class="header-sidebar__list-item"><a href="https://www.geeksforgeeks.org/geeks-classes-geeksforgeeks/?ref=ghm" target="_self">What's New ?</a></li>
     </ul>
     <div class="mobile_translate">
-     <div id="google_translate_mobile" data-show="false"></div><button class="google_translate_element_mobile" data-gfg-action="google_translate_mobile" aria-expanded="false" data-expanded="true"> <i class="gfg-icon gfg-icon_translate googleTranslateToggleMobile"></i>Change Language</button>
+     <div id="google_translate_mobile" data-show="false"></div>
+     <div style="margin:auto">
+      <button class="toggle-darkMode" data-gfg-action="toggleGFGTheme"> <i class="gfg-icon gfg-icon_dark-mode"></i></button> <button class="google_translate_element_mobile" data-gfg-action="google_translate_mobile" aria-expanded="false" data-expanded="true"> <i class="gfg-icon gfg-icon_translate googleTranslateToggleMobile"></i>Change Language</button>
+     </div>
     </div>
     <div style="height:80px"></div>
    </div>
@@ -478,6 +522,267 @@ var gfgObject = {"authUrl":"https:\/\/auth.geeksforgeeks.org\/","writeApiUrl":"h
        </div>
       </div>
       <div class="articles-list">
+       <div class="articles-list_item post-618216 post type-post status-publish format-standard hentry category-interview-experiences tag-marketing tag-mercedes-benz tag-on-campus" id="post-618216">
+        <div class="content">
+         <div class="head">
+          <a href="https://www.geeksforgeeks.org/mercedes-benz-rd-india-interview-experience-on-campus/" title="Permalink to Mercedes Benz R&amp;D India Interview Experience (On-Campus)" rel="bookmark">Mercedes Benz R&amp;D India Interview Experience (On-Campus)</a>
+         </div>
+         <div class="difficulty-level"></div>
+         <div class="text">
+          Role: Post Graduate Engineer Trainee(May, 2021) Branch: M. Tech CSE Four rounds were there, Online test and three interviews, namely, technical, managerial, and HR. Round… <span class="read-more"><a href="https://www.geeksforgeeks.org/mercedes-benz-rd-india-interview-experience-on-campus/">Read More</a></span>
+         </div>
+         <div class="tags">
+          <i class="gfg-icon gfg-icon_tag-primary"></i>
+          <div class="tags-list">
+           <div class="tags-list_item">
+            <div class="item">
+             <a href="https://www.geeksforgeeks.org/tag/marketing/">Marketing</a>
+            </div>
+           </div>
+           <div class="tags-list_item">
+            <div class="item">
+             <a href="https://www.geeksforgeeks.org/tag/mercedes-benz/">Mercedes Benz</a>
+            </div>
+           </div>
+           <div class="tags-list_item">
+            <div class="item">
+             <a href="https://www.geeksforgeeks.org/tag/on-campus/">On-Campus</a>
+            </div>
+           </div>
+           <div class="tags-list_item">
+            <div class="item">
+             <a href="https://www.geeksforgeeks.org/category/interview-experiences/">Interview Experiences</a>
+            </div>
+           </div>
+          </div>
+         </div>
+        </div>
+       </div>
+       <div class="articles-list_item post-618162 post type-post status-publish format-standard hentry category-interview-experiences tag-capgemini tag-marketing tag-on-campus" id="post-618162">
+        <div class="content">
+         <div class="head">
+          <a href="https://www.geeksforgeeks.org/capgemini-interview-experience-on-campus-4/" title="Permalink to Capgemini Interview Experience (On-Campus)" rel="bookmark">Capgemini Interview Experience (On-Campus)</a>
+         </div>
+         <div class="difficulty-level"></div>
+         <div class="text">
+          Company – Capgemini (Virtual Interview) Job Profile – Senior Analyst Eligibility –&nbsp; All branches B.Tech/DD, M.Tech Minimum 60% in Academics(X, XII) Minimum 6 CGPA with… <span class="read-more"><a href="https://www.geeksforgeeks.org/capgemini-interview-experience-on-campus-4/">Read More</a></span>
+         </div>
+         <div class="tags">
+          <i class="gfg-icon gfg-icon_tag-primary"></i>
+          <div class="tags-list">
+           <div class="tags-list_item">
+            <div class="item">
+             <a href="https://www.geeksforgeeks.org/tag/capgemini/">Capgemini</a>
+            </div>
+           </div>
+           <div class="tags-list_item">
+            <div class="item">
+             <a href="https://www.geeksforgeeks.org/tag/marketing/">Marketing</a>
+            </div>
+           </div>
+           <div class="tags-list_item">
+            <div class="item">
+             <a href="https://www.geeksforgeeks.org/tag/on-campus/">On-Campus</a>
+            </div>
+           </div>
+           <div class="tags-list_item">
+            <div class="item">
+             <a href="https://www.geeksforgeeks.org/category/interview-experiences/">Interview Experiences</a>
+            </div>
+           </div>
+          </div>
+         </div>
+        </div>
+       </div>
+       <div class="articles-list_item post-618282 post type-post status-publish format-standard hentry category-interview-experiences tag-marketing tag-zoho" id="post-618282">
+        <div class="content">
+         <div class="head">
+          <a href="https://www.geeksforgeeks.org/zoho-interview-experience-feb-2021/" title="Permalink to Zoho Interview Experience (Feb 2021)" rel="bookmark">Zoho Interview Experience (Feb 2021)</a>
+         </div>
+         <div class="difficulty-level"></div>
+         <div class="text">
+          Round 1: In first round a program was given to solve.&nbsp; Pattern printing problem. They will give any word as input for ex: WATER. This… <span class="read-more"><a href="https://www.geeksforgeeks.org/zoho-interview-experience-feb-2021/">Read More</a></span>
+         </div>
+         <div class="tags">
+          <i class="gfg-icon gfg-icon_tag-primary"></i>
+          <div class="tags-list">
+           <div class="tags-list_item">
+            <div class="item">
+             <a href="https://www.geeksforgeeks.org/tag/marketing/">Marketing</a>
+            </div>
+           </div>
+           <div class="tags-list_item">
+            <div class="item">
+             <a href="https://www.geeksforgeeks.org/tag/zoho/">Zoho</a>
+            </div>
+           </div>
+           <div class="tags-list_item">
+            <div class="item">
+             <a href="https://www.geeksforgeeks.org/category/interview-experiences/">Interview Experiences</a>
+            </div>
+           </div>
+          </div>
+         </div>
+        </div>
+       </div>
+       <div class="articles-list_item post-618258 post type-post status-publish format-standard hentry category-internship-interview-experiences category-interview-experiences tag-marketing tag-rakuten" id="post-618258">
+        <div class="content">
+         <div class="head">
+          <a href="https://www.geeksforgeeks.org/rakuten-internship-interview-expereince/" title="Permalink to Rakuten Internship Interview Expereince" rel="bookmark">Rakuten Internship Interview Expereince</a>
+         </div>
+         <div class="difficulty-level"></div>
+         <div class="text">
+          I applied through Employee Referral at Rakuten Banglore for an Intern position(6-Month Intern) for 2021 Batch After almost 20 days I got a call at… <span class="read-more"><a href="https://www.geeksforgeeks.org/rakuten-internship-interview-expereince/">Read More</a></span>
+         </div>
+         <div class="tags">
+          <i class="gfg-icon gfg-icon_tag-primary"></i>
+          <div class="tags-list">
+           <div class="tags-list_item">
+            <div class="item">
+             <a href="https://www.geeksforgeeks.org/tag/marketing/">Marketing</a>
+            </div>
+           </div>
+           <div class="tags-list_item">
+            <div class="item">
+             <a href="https://www.geeksforgeeks.org/tag/rakuten/">Rakuten</a>
+            </div>
+           </div>
+           <div class="tags-list_item">
+            <div class="item">
+             <a href="https://www.geeksforgeeks.org/category/interview-experiences/internship-interview-experiences/">Internship</a>
+            </div>
+           </div>
+           <div class="tags-list_item">
+            <div class="item">
+             <a href="https://www.geeksforgeeks.org/category/interview-experiences/">Interview Experiences</a>
+            </div>
+           </div>
+          </div>
+         </div>
+        </div>
+       </div>
+       <div class="articles-list_item post-618265 post type-post status-publish format-standard hentry category-internship-interview-experiences category-interview-experiences tag-cedcoss tag-marketing tag-off-campus" id="post-618265">
+        <div class="content">
+         <div class="head">
+          <a href="https://www.geeksforgeeks.org/cedcoss-technologies-pvt-ltd-interview-experience-for-software-developer-intern-off-campus-2021/" title="Permalink to CEDCOSS Technologies Pvt. Ltd Interview Experience for Software Developer Intern | Off-Campus 2021" rel="bookmark">CEDCOSS Technologies Pvt. Ltd Interview Experience for Software Developer Intern | Off-Campus 2021</a>
+         </div>
+         <div class="difficulty-level"></div>
+         <div class="text">
+          Selection Process: Aptitude Test HR cum Technical Round Machine Test Technical Interview *(Each Round is elimination round). Round 1(Aptitude Test):&nbsp; Off-Line(In Office), there were 15… <span class="read-more"><a href="https://www.geeksforgeeks.org/cedcoss-technologies-pvt-ltd-interview-experience-for-software-developer-intern-off-campus-2021/">Read More</a></span>
+         </div>
+         <div class="tags">
+          <i class="gfg-icon gfg-icon_tag-primary"></i>
+          <div class="tags-list">
+           <div class="tags-list_item">
+            <div class="item">
+             <a href="https://www.geeksforgeeks.org/tag/cedcoss/">CEDCOSS</a>
+            </div>
+           </div>
+           <div class="tags-list_item">
+            <div class="item">
+             <a href="https://www.geeksforgeeks.org/tag/marketing/">Marketing</a>
+            </div>
+           </div>
+           <div class="tags-list_item">
+            <div class="item">
+             <a href="https://www.geeksforgeeks.org/tag/off-campus/">Off-Campus</a>
+            </div>
+           </div>
+           <div class="tags-list_item">
+            <div class="item">
+             <a href="https://www.geeksforgeeks.org/category/interview-experiences/internship-interview-experiences/">Internship</a>
+            </div>
+           </div>
+           <div class="tags-list_item">
+            <div class="item">
+             <a href="https://www.geeksforgeeks.org/category/interview-experiences/">Interview Experiences</a>
+            </div>
+           </div>
+          </div>
+         </div>
+        </div>
+       </div>
+       <div class="articles-list_item post-618273 post type-post status-publish format-standard hentry category-interview-experiences tag-marketing tag-zoho" id="post-618273">
+        <div class="content">
+         <div class="head">
+          <a href="https://www.geeksforgeeks.org/zoho-interview-experience-may-2021/" title="Permalink to Zoho Interview Experience (May 2021)" rel="bookmark">Zoho Interview Experience (May 2021)</a>
+         </div>
+         <div class="difficulty-level"></div>
+         <div class="text">
+          Round 1: In the first round, 10 C questions and 10 aptitude questions were asked. I almost solved 15 questions and made it to the… <span class="read-more"><a href="https://www.geeksforgeeks.org/zoho-interview-experience-may-2021/">Read More</a></span>
+         </div>
+         <div class="tags">
+          <i class="gfg-icon gfg-icon_tag-primary"></i>
+          <div class="tags-list">
+           <div class="tags-list_item">
+            <div class="item">
+             <a href="https://www.geeksforgeeks.org/tag/marketing/">Marketing</a>
+            </div>
+           </div>
+           <div class="tags-list_item">
+            <div class="item">
+             <a href="https://www.geeksforgeeks.org/tag/zoho/">Zoho</a>
+            </div>
+           </div>
+           <div class="tags-list_item">
+            <div class="item">
+             <a href="https://www.geeksforgeeks.org/category/interview-experiences/">Interview Experiences</a>
+            </div>
+           </div>
+          </div>
+         </div>
+        </div>
+       </div>
+       <div class="articles-list_item post-617167 post type-post status-publish format-standard hentry category-android category-guestblogs" id="post-617167">
+        <div class="content">
+         <div class="head">
+          <a href="https://www.geeksforgeeks.org/how-to-become-a-google-certified-android-developer/" title="Permalink to How to Become a Google Certified Android Developer?" rel="bookmark">How to Become a Google Certified Android Developer?</a>
+         </div>
+         <div class="difficulty-level"></div>
+         <div class="text">
+          Android, the world’s most used mobile operating system. Many features of it make it different and better from other mobile operating systems. Learning Android App… <span class="read-more"><a href="https://www.geeksforgeeks.org/how-to-become-a-google-certified-android-developer/">Read More</a></span>
+         </div>
+         <div class="tags">
+          <i class="gfg-icon gfg-icon_tag-primary"></i>
+          <div class="tags-list">
+           <div class="tags-list_item">
+            <div class="item">
+             <a href="https://www.geeksforgeeks.org/category/android/">Android</a>
+            </div>
+           </div>
+           <div class="tags-list_item">
+            <div class="item">
+             <a href="https://www.geeksforgeeks.org/category/guestblogs/">GBlog</a>
+            </div>
+           </div>
+          </div>
+         </div>
+        </div>
+       </div>
+       <div class="side--container tutorials--container sm-widget">
+        <div class="card-layout">
+         <div class="heading">
+          <div class="def-title_wrap">
+           <div class="title">
+            Quick Links
+           </div>
+          </div>
+         </div>
+         <div class="content-wrapper">
+          <div class="item-container">
+           <ul class="ql-list">
+            <li class="ql-list_item"><a href="https://practice.geeksforgeeks.org/events/?ref=grb"><i class="quick-link_icon quick-link_icon-event"></i> <span>Events at GeeksforGeeks</span> <span class="gfg-icon gfg-icon_arrow-right"></span></a></li>
+            <li class="ql-list_item"><a href="https://practice.geeksforgeeks.org/courses/?ref=grb"><i class="quick-link_icon quick-link_icon-course"></i> <span>Courses at GeeksforGeeks</span> <span class="gfg-icon gfg-icon_arrow-right"></span></a></li>
+            <li class="ql-list_item"><a href="https://www.geeksforgeeks.org/java/?ref=grb"><i class="quick-link_icon quick-link_icon-java"></i> <span>Java Tutorial</span> <span class="gfg-icon gfg-icon_arrow-right"></span></a></li>
+            <li class="ql-list_item"><a href="https://www.geeksforgeeks.org/python-programming-language/?ref=grb"><i class="quick-link_icon quick-link_icon-py"></i> <span>Python Tutorial</span> <span class="gfg-icon gfg-icon_arrow-right"></span></a></li>
+            <li class="ql-list_item"><a href="https://www.geeksforgeeks.org/data-structures/?ref=grb"><i class="quick-link_icon quick-link_icon-dsa"></i> <span>Data Structures Tutorial</span> <span class="gfg-icon gfg-icon_arrow-right"></span></a></li>
+            <li class="ql-list_item"><a href="https://www.geeksforgeeks.org/internship/?ref=grb"><i class="quick-link_icon quick-link_icon-internship"></i> <span>Internships at GeeksforGeeks</span> <span class="gfg-icon gfg-icon_arrow-right"></span></a></li>
+            <li class="ql-list_item"><a href="https://practice.geeksforgeeks.org/explore/?ref=grb"><i class="quick-link_icon quick-link_icon-code"></i> <span>Coding Practice</span> <span class="gfg-icon gfg-icon_arrow-right"></span></a></li>
+           </ul>
+          </div>
+         </div>
+        </div>
+       </div>
        <div class="articles-list_item post-614134 post type-post status-publish format-standard hentry category-android category-guestblogs category-java category-project tag-android-studio" id="post-614134">
         <div class="content">
          <div class="head">
@@ -714,30 +1019,6 @@ var gfgObject = {"authUrl":"https:\/\/auth.geeksforgeeks.org\/","writeApiUrl":"h
          </div>
         </div>
        </div>
-       <div class="side--container tutorials--container sm-widget">
-        <div class="card-layout">
-         <div class="heading">
-          <div class="def-title_wrap">
-           <div class="title">
-            Quick Links
-           </div>
-          </div>
-         </div>
-         <div class="content-wrapper">
-          <div class="item-container">
-           <ul class="ql-list">
-            <li class="ql-list_item"><a href="https://practice.geeksforgeeks.org/events/?ref=grb"><i class="quick-link_icon quick-link_icon-event"></i> <span>Events at GeeksforGeeks</span> <span class="gfg-icon gfg-icon_arrow-right"></span></a></li>
-            <li class="ql-list_item"><a href="https://practice.geeksforgeeks.org/courses/?ref=grb"><i class="quick-link_icon quick-link_icon-course"></i> <span>Courses at GeeksforGeeks</span> <span class="gfg-icon gfg-icon_arrow-right"></span></a></li>
-            <li class="ql-list_item"><a href="https://www.geeksforgeeks.org/java/?ref=grb"><i class="quick-link_icon quick-link_icon-java"></i> <span>Java Tutorial</span> <span class="gfg-icon gfg-icon_arrow-right"></span></a></li>
-            <li class="ql-list_item"><a href="https://www.geeksforgeeks.org/python-programming-language/?ref=grb"><i class="quick-link_icon quick-link_icon-py"></i> <span>Python Tutorial</span> <span class="gfg-icon gfg-icon_arrow-right"></span></a></li>
-            <li class="ql-list_item"><a href="https://www.geeksforgeeks.org/data-structures/?ref=grb"><i class="quick-link_icon quick-link_icon-dsa"></i> <span>Data Structures Tutorial</span> <span class="gfg-icon gfg-icon_arrow-right"></span></a></li>
-            <li class="ql-list_item"><a href="https://www.geeksforgeeks.org/internship/?ref=grb"><i class="quick-link_icon quick-link_icon-internship"></i> <span>Internships at GeeksforGeeks</span> <span class="gfg-icon gfg-icon_arrow-right"></span></a></li>
-            <li class="ql-list_item"><a href="https://practice.geeksforgeeks.org/explore/?ref=grb"><i class="quick-link_icon quick-link_icon-code"></i> <span>Coding Practice</span> <span class="gfg-icon gfg-icon_arrow-right"></span></a></li>
-           </ul>
-          </div>
-         </div>
-        </div>
-       </div>
        <div class="articles-list_item post-616970 post type-post status-publish format-standard hentry category-internship-interview-experiences category-interview-experiences tag-marketing tag-samsung" id="post-616970">
         <div class="content">
          <div class="head">
@@ -774,232 +1055,11 @@ var gfgObject = {"authUrl":"https:\/\/auth.geeksforgeeks.org\/","writeApiUrl":"h
          </div>
         </div>
        </div>
-       <div class="articles-list_item post-615826 post type-post status-publish format-standard hentry category-interview-experiences tag-infosys tag-infosys-interview-experience tag-marketing tag-on-campus" id="post-615826">
-        <div class="content">
-         <div class="head">
-          <a href="https://www.geeksforgeeks.org/infosys-interview-experience-on-campus/" title="Permalink to Infosys Interview Experience (On-Campus)" rel="bookmark">Infosys Interview Experience (On-Campus)</a>
-         </div>
-         <div class="difficulty-level">
-          <a href="https://www.geeksforgeeks.org/basic/">Basic</a>
-         </div>
-         <div class="text">
-          I join Infosys as System Engineer in Dec-2019. So here I have explained my full experience regarding the interview. I have done my engineering from… <span class="read-more"><a href="https://www.geeksforgeeks.org/infosys-interview-experience-on-campus/">Read More</a></span>
-         </div>
-         <div class="tags">
-          <i class="gfg-icon gfg-icon_tag-primary"></i>
-          <div class="tags-list">
-           <div class="tags-list_item">
-            <div class="item">
-             <a href="https://www.geeksforgeeks.org/tag/infosys/">Infosys</a>
-            </div>
-           </div>
-           <div class="tags-list_item">
-            <div class="item">
-             <a href="https://www.geeksforgeeks.org/tag/infosys-interview-experience/">Infosys-interview-experience</a>
-            </div>
-           </div>
-           <div class="tags-list_item">
-            <div class="item">
-             <a href="https://www.geeksforgeeks.org/tag/marketing/">Marketing</a>
-            </div>
-           </div>
-           <div class="tags-list_item">
-            <div class="item">
-             <a href="https://www.geeksforgeeks.org/tag/on-campus/">On-Campus</a>
-            </div>
-           </div>
-           <div class="tags-list_item">
-            <div class="item">
-             <a href="https://www.geeksforgeeks.org/category/interview-experiences/">Interview Experiences</a>
-            </div>
-           </div>
-          </div>
-         </div>
-        </div>
-       </div>
-       <div class="articles-list_item post-615787 post type-post status-publish format-standard hentry category-interview-experiences tag-marketing tag-wipro tag-wipro-interview-experience" id="post-615787">
-        <div class="content">
-         <div class="head">
-          <a href="https://www.geeksforgeeks.org/wipro-national-level-talent-hunt-interview-experience-2021/" title="Permalink to Wipro National Level Talent Hunt Interview Experience 2021" rel="bookmark">Wipro National Level Talent Hunt Interview Experience 2021</a>
-         </div>
-         <div class="difficulty-level"></div>
-         <div class="text">
-          I appeared for Wipro NLTH (National Level Talent Hunt) 2021 exam in January 2021. This exam consisted of three rounds: Online test, Technical Interview, and… <span class="read-more"><a href="https://www.geeksforgeeks.org/wipro-national-level-talent-hunt-interview-experience-2021/">Read More</a></span>
-         </div>
-         <div class="tags">
-          <i class="gfg-icon gfg-icon_tag-primary"></i>
-          <div class="tags-list">
-           <div class="tags-list_item">
-            <div class="item">
-             <a href="https://www.geeksforgeeks.org/tag/marketing/">Marketing</a>
-            </div>
-           </div>
-           <div class="tags-list_item">
-            <div class="item">
-             <a href="https://www.geeksforgeeks.org/tag/wipro/">Wipro</a>
-            </div>
-           </div>
-           <div class="tags-list_item">
-            <div class="item">
-             <a href="https://www.geeksforgeeks.org/tag/wipro-interview-experience/">Wipro-interview-experience</a>
-            </div>
-           </div>
-           <div class="tags-list_item">
-            <div class="item">
-             <a href="https://www.geeksforgeeks.org/category/interview-experiences/">Interview Experiences</a>
-            </div>
-           </div>
-          </div>
-         </div>
-        </div>
-       </div>
-       <div class="articles-list_item post-615859 post type-post status-publish format-standard hentry category-interview-experiences tag-ericsson tag-marketing" id="post-615859">
-        <div class="content">
-         <div class="head">
-          <a href="https://www.geeksforgeeks.org/ericsson-india-global-services-pvt-ltd-interview-experience/" title="Permalink to Ericsson India Global Services PVT. Ltd Interview Experience" rel="bookmark">Ericsson India Global Services PVT. Ltd Interview Experience</a>
-         </div>
-         <div class="difficulty-level"></div>
-         <div class="text">
-          Round 1(Written): The first round comprised of 40 MCQ questions including Quantitative Aptitude, Verbal, and Reasoning.&nbsp; Quantitative aptitude and Logical part was not too tough… <span class="read-more"><a href="https://www.geeksforgeeks.org/ericsson-india-global-services-pvt-ltd-interview-experience/">Read More</a></span>
-         </div>
-         <div class="tags">
-          <i class="gfg-icon gfg-icon_tag-primary"></i>
-          <div class="tags-list">
-           <div class="tags-list_item">
-            <div class="item">
-             <a href="https://www.geeksforgeeks.org/tag/ericsson/">Ericsson</a>
-            </div>
-           </div>
-           <div class="tags-list_item">
-            <div class="item">
-             <a href="https://www.geeksforgeeks.org/tag/marketing/">Marketing</a>
-            </div>
-           </div>
-           <div class="tags-list_item">
-            <div class="item">
-             <a href="https://www.geeksforgeeks.org/category/interview-experiences/">Interview Experiences</a>
-            </div>
-           </div>
-          </div>
-         </div>
-        </div>
-       </div>
-       <div class="articles-list_item post-610201 post type-post status-publish format-standard hentry category-java tag-java-collections" id="post-610201">
-        <div class="content">
-         <div class="head">
-          <a href="https://www.geeksforgeeks.org/why-we-need-collection-framework-in-java/" title="Permalink to Why We Need Collection Framework in Java?" rel="bookmark">Why We Need Collection Framework in Java?</a>
-         </div>
-         <div class="difficulty-level">
-          <a href="https://www.geeksforgeeks.org/hard/">Hard</a>
-         </div>
-         <div class="text">
-          A framework is a set of classes and interfaces which provide a ready-made architecture. In order to implement a new feature or a class, there… <span class="read-more"><a href="https://www.geeksforgeeks.org/why-we-need-collection-framework-in-java/">Read More</a></span>
-         </div>
-         <div class="tags">
-          <i class="gfg-icon gfg-icon_tag-primary"></i>
-          <div class="tags-list">
-           <div class="tags-list_item">
-            <div class="item">
-             <a href="https://www.geeksforgeeks.org/tag/java-collections/">Java-Collections</a>
-            </div>
-           </div>
-           <div class="tags-list_item">
-            <div class="item">
-             <a href="https://www.geeksforgeeks.org/category/programming-language/java/">Java</a>
-            </div>
-           </div>
-          </div>
-         </div>
-        </div>
-       </div>
-       <div class="articles-list_item post-615908 post type-post status-publish format-standard hentry category-android tag-android-studio tag-picked" id="post-615908">
-        <div class="content">
-         <div class="head">
-          <a href="https://www.geeksforgeeks.org/fix-module-not-specified-error-in-android-studio/" title="Permalink to Fix “Module not specified” Error in Android Studio" rel="bookmark">Fix “Module not specified” Error in Android Studio</a>
-         </div>
-         <div class="difficulty-level"></div>
-         <div class="text">
-          Whenever we try to debug the application on Android Studio we may encounter the error “Module not specified” in the Android Studio. So, In this… <span class="read-more"><a href="https://www.geeksforgeeks.org/fix-module-not-specified-error-in-android-studio/">Read More</a></span>
-         </div>
-         <div class="tags">
-          <i class="gfg-icon gfg-icon_tag-primary"></i>
-          <div class="tags-list">
-           <div class="tags-list_item">
-            <div class="item">
-             <a href="https://www.geeksforgeeks.org/tag/android-studio/">Android-Studio</a>
-            </div>
-           </div>
-           <div class="tags-list_item">
-            <div class="item">
-             <a href="https://www.geeksforgeeks.org/tag/picked/">Picked</a>
-            </div>
-           </div>
-           <div class="tags-list_item">
-            <div class="item">
-             <a href="https://www.geeksforgeeks.org/category/android/">Android</a>
-            </div>
-           </div>
-          </div>
-         </div>
-        </div>
-       </div>
-       <div class="articles-list_item post-615353 post type-post status-publish format-standard hentry category-how-to category-techtips" id="post-615353">
-        <div class="content">
-         <div class="head">
-          <a href="https://www.geeksforgeeks.org/how-to-delete-temporary-files-in-windows-10/" title="Permalink to How to Delete Temporary Files in Windows 10?" rel="bookmark">How to Delete Temporary Files in Windows 10?</a>
-         </div>
-         <div class="difficulty-level"></div>
-         <div class="text">
-          Sometimes, despite having enough RAM, our system lags or hangs. This trouble can be due to storage issues or any extra unnecessary program running in… <span class="read-more"><a href="https://www.geeksforgeeks.org/how-to-delete-temporary-files-in-windows-10/">Read More</a></span>
-         </div>
-         <div class="tags">
-          <i class="gfg-icon gfg-icon_tag-primary"></i>
-          <div class="tags-list">
-           <div class="tags-list_item">
-            <div class="item">
-             <a href="https://www.geeksforgeeks.org/category/how-to/">How To</a>
-            </div>
-           </div>
-           <div class="tags-list_item">
-            <div class="item">
-             <a href="https://www.geeksforgeeks.org/category/techtips/">TechTips</a>
-            </div>
-           </div>
-          </div>
-         </div>
-        </div>
-       </div>
-       <div class="articles-list_item post-615152 post type-post status-publish format-standard hentry category-android category-java" id="post-615152">
-        <div class="content">
-         <div class="head">
-          <a href="https://www.geeksforgeeks.org/how-to-communicate-with-pc-using-android/" title="Permalink to How to Communicate with PC using Android?" rel="bookmark">How to Communicate with PC using Android?</a>
-         </div>
-         <div class="difficulty-level"></div>
-         <div class="text">
-          In this article, we would be discussing one of the basic ways of communication between a program on a PC and an Android device. Here… <span class="read-more"><a href="https://www.geeksforgeeks.org/how-to-communicate-with-pc-using-android/">Read More</a></span>
-         </div>
-         <div class="tags">
-          <i class="gfg-icon gfg-icon_tag-primary"></i>
-          <div class="tags-list">
-           <div class="tags-list_item">
-            <div class="item">
-             <a href="https://www.geeksforgeeks.org/category/android/">Android</a>
-            </div>
-           </div>
-           <div class="tags-list_item">
-            <div class="item">
-             <a href="https://www.geeksforgeeks.org/category/programming-language/java/">Java</a>
-            </div>
-           </div>
-          </div>
-         </div>
-        </div>
-       </div>
       </div>
       <nav id="nav-below" class="navigation" role="navigation" style="display:flex">
        <center style="margin: 25px auto 0;">
         <div class="wp-pagenavi">
-         <span class="pages">Page 1 of 6,304</span><span class="current">1</span><a class="page larger" title="Page 2" href="https://www.geeksforgeeks.org/page/2/">2</a><a class="page larger" title="Page 3" href="https://www.geeksforgeeks.org/page/3/">3</a><a class="page larger" title="Page 4" href="https://www.geeksforgeeks.org/page/4/">4</a><a class="page larger" title="Page 5" href="https://www.geeksforgeeks.org/page/5/">5</a><span class="extend">...</span><a class="larger page" title="Page 10" href="https://www.geeksforgeeks.org/page/10/">10</a><a class="larger page" title="Page 20" href="https://www.geeksforgeeks.org/page/20/">20</a><a class="larger page" title="Page 30" href="https://www.geeksforgeeks.org/page/30/">30</a><span class="extend">...</span><a class="nextpostslink" rel="next" href="https://www.geeksforgeeks.org/page/2/">»</a><a class="last" href="https://www.geeksforgeeks.org/page/6304/">Last »</a>
+         <span class="pages">Page 1 of 6,305</span><span class="current">1</span><a class="page larger" title="Page 2" href="https://www.geeksforgeeks.org/page/2/">2</a><a class="page larger" title="Page 3" href="https://www.geeksforgeeks.org/page/3/">3</a><a class="page larger" title="Page 4" href="https://www.geeksforgeeks.org/page/4/">4</a><a class="page larger" title="Page 5" href="https://www.geeksforgeeks.org/page/5/">5</a><span class="extend">...</span><a class="larger page" title="Page 10" href="https://www.geeksforgeeks.org/page/10/">10</a><a class="larger page" title="Page 20" href="https://www.geeksforgeeks.org/page/20/">20</a><a class="larger page" title="Page 30" href="https://www.geeksforgeeks.org/page/30/">30</a><span class="extend">...</span><a class="nextpostslink" rel="next" href="https://www.geeksforgeeks.org/page/2/">»</a><a class="last" href="https://www.geeksforgeeks.org/page/6305/">Last »</a>
         </div>
        </center>
       </nav>
@@ -1281,6 +1341,9 @@ var gfgObject = {"authUrl":"https:\/\/auth.geeksforgeeks.org\/","writeApiUrl":"h
     <div class="social-links"></div>
    </div>
   </footer>
+  <div class="darkMode-wrap" data-mode="Switch to Dark Mode">
+   <button data-gfg-action="toggleGFGTheme"> <i class="gfg-icon gfg-icon_dark-mode"></i></button>
+  </div>
   <link rel="stylesheet" id="mediaelement-css" href="https://www.geeksforgeeks.org/wp-includes/js/mediaelement/mediaelementplayer-legacy.min.css?ver=4.2.6-78496d1" media="all">
   <link rel="stylesheet" id="wp-mediaelement-css" href="https://www.geeksforgeeks.org/wp-includes/js/mediaelement/wp-mediaelement.min.css?ver=4.9.8" media="all">
   <script src="https://www.geeksforgeeks.org/wp-includes/js/wp-embed.min.js?ver=4.9.8"></script>

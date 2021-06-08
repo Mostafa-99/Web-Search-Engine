@@ -140,20 +140,14 @@ public class Indexer implements Runnable {
 
     public void indexerMain(){
         Queue<Integer> queue = DB.getLinksToVisitIndexer_CrawlerTable(5);
-        int batchedLinks = DB.getTotalNumberOfBatchedLinks();
-        int downloadedLinks = DB.getTotalNumberOfDownloadedLinks_CrawlerTable();
-        int indexedLinks = DB.getTotalNumberOfIndexedLinks_CrawlerTable();
-
-        while( !((batchedLinks == downloadedLinks) && (indexedLinks == downloadedLinks) && (batchedLinks == downloadedLinks)) ){
+        while(true){
             if(queue.size()!=0){
                 String filePath = "./downloaded/page_";
                 int id = queue.poll();
                 filePath = filePath + Integer.toString(id) + ".html";
                 index(filePath);
                 DB.markIndexedLink_CrawlerTable(id);
-                batchedLinks = DB.getTotalNumberOfBatchedLinks();
-                downloadedLinks = DB.getTotalNumberOfDownloadedLinks_CrawlerTable();
-                indexedLinks = DB.getTotalNumberOfIndexedLinks_CrawlerTable();
+    
                 headersWordsFrequency.clear();
                 textWordsFrequency.clear();
                 titleWordsFrequency.clear();
@@ -161,6 +155,9 @@ public class Indexer implements Runnable {
             }
             else if(queue.size()==0){
                 queue = DB.getLinksToVisitIndexer_CrawlerTable(5);
+                if(queue.size()==0){
+                    break;
+                }
             }
         }
     }
