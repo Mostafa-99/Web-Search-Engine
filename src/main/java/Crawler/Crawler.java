@@ -51,8 +51,8 @@ public class Crawler implements Runnable {
        this.DBMaxSize = DBMaxSize;
     }
 
-    public Crawler(Queue<linkAndID> queue, int numberOfThreads, int crawlingSize, int DBMaxSize, Hashtable<String, robotsObj> robots){
-        this.DB= new DBManager();
+    public Crawler(DBManager DB, Queue<linkAndID> queue, int numberOfThreads, int crawlingSize, int DBMaxSize, Hashtable<String, robotsObj> robots){
+        this.DB= DB;
         this.numberOfThreads = numberOfThreads;
         this.queue = queue;        
         this.robots = robots;
@@ -81,10 +81,12 @@ public class Crawler implements Runnable {
                         try {
                             //check if link is valid
                             Jsoup.connect(linkHref).get();
-                            boolean isValid = checkValidityOfLink(linkHref);
-                            
-                            if(isValid == true){
-                                DB.addLink_CrawlerTable(linkHref);
+                            synchronized(DB){
+                                boolean isValid = checkValidityOfLink(linkHref);
+                                
+                                if(isValid == true){
+                                    DB.addLink_CrawlerTable(linkHref);
+                                }
                             }
                         } catch (Exception e) {  }    
 
@@ -207,10 +209,7 @@ public class Crawler implements Runnable {
                     
                 }
                 if(linkToVisit !=null ){
-                    //System.out.println("Start download "+ Thread.currentThread().getName()+" link id="+linkToVisit.id);
                     getURLs(linkToVisit.link,linkToVisit.id);
-                    //System.out.println("Finished download "+ Thread.currentThread().getName());
-                    //System.out.println("************************************************************************");
                 }
             }
         }
@@ -245,9 +244,6 @@ public class Crawler implements Runnable {
         }
         else{
             crawl();
-            //System.out.println("************************************************************");
-            //System.out.println("Thread "+ Thread.currentThread().getName() + " Finished");
-            //System.out.println("************************************************************");
         }
     }
 
@@ -262,7 +258,6 @@ public class Crawler implements Runnable {
 
         Queue<linkAndID> queue = new LinkedList<>();
         int sizeRequired = crawlingSize-DB.getTotalNumberOfBatchedLinks_CrawlerTable() >= numberOfThreads ? numberOfThreads :  crawlingSize-DB.getTotalNumberOfBatchedLinks_CrawlerTable();
-        //System.out.println(DB.getTotalNumberOfLinks_CrawlerTable());
         if(DB.getTotalNumberOfDownloadedLinks_CrawlerTable() >= crawlingSize){
             sizeRequired=0;
         }
@@ -271,7 +266,7 @@ public class Crawler implements Runnable {
 
         Thread[] threads = new Thread[numberOfThreads];
         for(int i=0;i<numberOfThreads;i++){
-            threads[i] = new Thread(new Crawler(queue,numberOfThreads,crawlingSize, DBMaxSize,robots));
+            threads[i] = new Thread(new Crawler(DB,queue,numberOfThreads,crawlingSize, DBMaxSize,robots));
             threads[i].setName("Thread "+(i+1));
             threads[i].start();
         }
@@ -279,15 +274,6 @@ public class Crawler implements Runnable {
             thread.join();
         }
         
-    }
-
-
-    public static void main(String args[]) throws IOException {
-        Hashtable<String, robotsObj> robots =  new Hashtable<String, robotsObj>();
-        Queue<linkAndID> queue = new LinkedList<>();
-        int x = 0;
-        Crawler c =new Crawler(queue,x,x,0,robots);
-        c.downloadRobotTxt("https://www.amazon.com/");
     }
 
 }
