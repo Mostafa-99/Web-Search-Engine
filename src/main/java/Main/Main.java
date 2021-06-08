@@ -5,9 +5,9 @@ import Crawler.Crawler;
 import Indexer.Indexer;
 
 public class Main {
-    static final int RESTART = 0;
-    static final int RESUME = 1;
-    static final int state = RESUME;
+    static final int RESTART = 1;
+    static final int RESUME = 0;
+    static final int state = RESTART;
     static final int numberOfThreads = 10;
     static final int crawlingSize = 5000;
     static final int DBMaxSize = 10000;
@@ -22,7 +22,7 @@ public class Main {
         mainCrawlerThread.setName("Thread 0");
         mainCrawlerThread.start();
         mainCrawlerThread.join();
-        System.out.println("Crawler finished "+crawlingSize+" link with max number of links= "+DBMaxSize+ " in DB");
+        System.out.println("Crawler finished "+crawlingSize+" link");
         mainIndexerThread.start();
         mainIndexerThread.join();
         System.out.println("Indexer finished");

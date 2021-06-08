@@ -11,7 +11,7 @@ const Pagination = ({ postsPerPage, totalPosts }) => {
 }
   return (
     <nav>
-      <ul className='pagination'>
+      <ul className='pagination flex-wrap'>
         {pageNumbers.map(number => (
           <li key={number} className='page-item'>
             <a onClick={() => paginate(number)} href='' className='page-link'>
