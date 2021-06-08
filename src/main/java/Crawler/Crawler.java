@@ -7,6 +7,7 @@ import java.net.URI;
 import java.net.URL;
 import java.util.Scanner;
 
+import org.hibernate.validator.constraints.Length;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -67,6 +68,7 @@ public class Crawler implements Runnable {
             
             try {
                 FileWriter myWriter = new FileWriter("./downloaded/page_"+id+".html");
+                myWriter.write("");
                 myWriter.write(doc.toString());
                 myWriter.close();
             } catch (IOException e) {}
@@ -80,7 +82,7 @@ public class Crawler implements Runnable {
                         linkHref = normalizeURI(linkHref);
                         try {
                             //check if link is valid
-                            Jsoup.connect(linkHref).get();
+                            Jsoup.connect(linkHref).get().toString();
                             boolean isValid = checkValidityOfLink(linkHref);
                             
                             if(isValid == true){
@@ -110,7 +112,10 @@ public class Crawler implements Runnable {
     
     String reformRobotsPath(String path){
         path = path.replaceAll("\\*", ".*");
-        path = path.replaceAll("=", "=.*");
+        int index = path.lastIndexOf("=");
+        if(index==path.length()-1){
+            path = path.replaceAll("=", "=.*");
+        }
         path = path.replaceAll("\\?", "\\\\"+"?");
         path = path.replaceAll("\\+", "\\\\"+"+");
         if(path.substring(path.length() - 1) == "/"){
