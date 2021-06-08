@@ -67,6 +67,9 @@ function SearchingPage() {
                     alert(err)
                 })    
             }
+            else{
+                setLoading(false);
+            }
         };
         
         fetchPosts();
@@ -116,7 +119,7 @@ function SearchingPage() {
                         dataListName.length == 0?
                         ""
                         :
-                        dataListName.map((post,num) => (
+                        dataListName.map((post) => (
                             <option value={post.word}/>
                           ))
                     }

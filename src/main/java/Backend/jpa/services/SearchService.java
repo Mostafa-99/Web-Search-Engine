@@ -33,8 +33,9 @@ public class SearchService {
 	public ResponseEntity<?> GetLinks(String wordOrig,String word, int pageNumber, int pageSize) throws IOException {
 
 		Long ID = word_repo.findIdbyName(word);
-		Links Links[] = link_repo.findALLLinks(ID);
-
+		pageNumber = pageNumber * pageSize;
+		Links Links[] = link_repo.findALLLinks(ID,pageNumber);
+		System.out.println(Links.length);
 		Set <JSONObject>jsonObjects = new HashSet<>();
 		String URL=null;
 		long TF=0;
@@ -45,7 +46,7 @@ public class SearchService {
 		Elements desc;
 		Document doc;
 		String description ="";
-		for(int i=pageNumber*pageSize;i<(pageNumber*pageSize)+pageSize;i++)
+		for(int i=0;i<(pageSize);i++)
 		{
 			if(i>=Links.length)
 				break;
